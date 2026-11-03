@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "IOJH: Start development server",
+      "type": "shell",
+      "command": "pnpm dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "IOJH: Verify source",
+      "type": "shell",
+      "command": "pnpm lint; pnpm typecheck; pnpm test:unit",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "hero": {
+    "eyebrow": "INTERNATIONAL ONLINE JOURNAL HUB",
+    "titleLead": "Advancing Research.",
+    "titleAccent": "Connecting Knowledge.",
+    "description": "Research begins with a question. We help people navigate the work that follows — from methods and manuscripts to learning, publishing and discovery.",
+    "primary": "Explore services",
+    "secondary": "Discover the Academy",
+    "label": "A living atlas of research pathways",
+    "pathQuestion": "Question",
+    "pathMethod": "Method",
+    "pathEvidence": "Evidence",
+    "pathReach": "Knowledge",
+    "sideNote": "A conceptual illustration of the research journey — not institutional performance data.",
+    "shortcuts": [
+      {
+        "label": "Find a journal",
+        "href": "/journal-finder"
+      },
+      {
+        "label": "Explore publishing",
+        "href": "/publish-with-us"
+      },
+      {
+        "label": "Browse books",
+        "href": "/publisher"
+      }
+    ]
+  },
+  "capabilities": {
+    "eyebrow": "01 / WHAT WE DO",
+    "title": "Four capabilities. One commitment to rigorous work.",
+    "intro": "Different research needs call for different kinds of support. Explore the areas in which IOJH works.",
+    "panelEyebrow": "A closer look",
+    "panelEnd": "Explore the full scope and boundaries of this service.",
+    "items": [
+      {
+        "id": "01",
+        "title": "Publication Support",
+        "tag": "FROM DRAFT TO SUBMISSION",
+        "desc": "Support for manuscript preparation, editorial readiness and responsible publication planning.",
+        "for": "For authors and research teams",
+        "result": "Clearer preparation and informed next steps.",
+        "href": "/services/publication-support"
+      },
+      {
+        "id": "02",
+        "title": "Journal Development",
+        "tag": "EDITORIAL SYSTEMS",
+        "desc": "Planning and operational guidance for scholarly journals and editorial workflows.",
+        "for": "For editorial teams and publishers",
+        "result": "More deliberate journal processes and governance.",
+        "href": "/services/journal-development"
+      },
+      {
+        "id": "03",
+        "title": "Sectoral Research & Knowledge",
+        "tag": "FROM QUESTION TO INSIGHT",
+        "desc": "Research planning and knowledge work shaped by sector-specific questions and evidence.",
+        "for": "For programs and institutions",
+        "result": "A method-first path from information to useful insight.",
+        "href": "/services/sectoral-research-knowledge"
+      },
+      {
+        "id": "04",
+        "title": "Data Analysis & Manuscript",
+        "tag": "METHODS & REPORTING",
+        "desc": "Analytical support, interpretation and manuscript development with attention to transparency.",
+        "for": "For investigators and collaborators",
+        "result": "Findings communicated with methodological care.",
+        "href": "/services/data-analysis-manuscript"
+      }
+    ]
+  },
+  "work": {
+    "eyebrow": "02 / WORK & EVIDENCE",
+    "title": "Work worth showing. Claims worth checking.",
+    "intro": "Our project casebook will present approved work with its context, methods and evidence. Until those records are verified, these are the areas of practice—not claims of completed projects.",
+    "label": "ILLUSTRATIVE PRACTICE AREA",
+    "items": [
+      {
+        "number": "A",
+        "type": "Research design",
+        "title": "From a question to a defensible method",
+        "desc": "Framing the purpose, choosing an appropriate approach and documenting the decisions that matter."
+      },
+      {
+        "number": "B",
+        "type": "Knowledge translation",
+        "title": "From evidence to something useful",
+        "desc": "Organizing findings so readers, collaborators and decision-makers can understand what they do—and do not—show."
+      }
+    ],
+    "principlesTitle": "Our evidence standard",
+    "principles": [
+      {
+        "title": "Source first",
+        "desc": "Every public claim needs a traceable source."
+      },
+      {
+        "title": "Context matters",
+        "desc": "Methods and limitations travel with results."
+      },
+      {
+        "title": "Reviewed before published",
+        "desc": "Unverified numbers stay off the website."
+      }
+    ],
+    "action": "Explore projects"
+  },
+  "learn": {
+    "eyebrow": "03 / LEARN & PARTICIPATE",
+    "title": "A place to learn. A way to take part.",
+    "intro": "The IOJH Academy is being prepared for guided learning and mentorship. Program availability will appear only when confirmed.",
+    "academyTag": "IOJH ACADEMY",
+    "academyTitle": "Develop the skills behind stronger research.",
+    "academyDesc": "Live teaching, recorded learning and PhD mentorship are planned as distinct pathways, with clear access and scheduling before any enrollment.",
+    "learnTypes": [
+      {
+        "title": "Live learning",
+        "detail": "Scheduled sessions, when confirmed."
+      },
+      {
+        "title": "Recorded learning",
+        "detail": "Protected access, when available."
+      },
+      {
+        "title": "PhD mentorship",
+        "detail": "A request-and-proposal process."
+      }
+    ],
+    "academyAction": "Explore the Academy",
+    "yrdpTag": "YOUNG RESEARCHERS DEVELOPMENT PROGRAM",
+    "yrdpTitle": "Research grows through participation.",
+    "yrdpDesc": "Explore the YRDP program journey and eligibility information as the approved intake details become available.",
+    "yrdpAction": "Explore YRDP"
+  },
+  "publishing": {
+    "eyebrow": "04 / PUBLISHING & DISCOVERY",
+    "title": "Publishing decisions begin with better information.",
+    "intro": "Publishing with IOJH and discovering journals worldwide are different journeys. We keep those pathways clear.",
+    "pathOne": "IOJH publishing",
+    "pathOneDesc": "Explore the journal directory and ethical publishing guidance.",
+    "pathTwo": "Research Match Studio",
+    "pathTwoDesc": "A future evidence-led journal discovery workspace, designed around real scholarly sources.",
+    "searchLabel": "Find a relevant journal",
+    "searchPlaceholder": "Enter a topic, title or keywords",
+    "searchDisabled": "Live journal search is not active in this development preview.",
+    "finderAction": "Preview the Journal Finder",
+    "guideAction": "Publishing guidance",
+    "pipeline": [
+      "Research topic",
+      "Published evidence",
+      "Relevant journals"
+    ]
+  },
+  "publisher": {
+    "eyebrow": "05 / IOJH PUBLISHER",
+    "title": "Ideas made tangible.",
+    "intro": "An editorial home for physical academic books. Exact editions, pricing, stock and authorized sample pages will be connected to the catalogue later.",
+    "bookTag": "FEATURED TITLE · CONTENT FIXTURE",
+    "bookTitle": "Research Method, Manuscript Preparation and Publication",
+    "bookSub": "Academic research and scholarly publishing",
+    "bookNote": "Temporary cover composition for local design review. Replace with the approved official book image; availability and price are not yet published.",
+    "bookAction": "Explore IOJH Publisher",
+    "shelfCaption": "A carefully considered bookshop, not a generic product grid."
+  },
+  "insights": {
+    "eyebrow": "06 / NOTES & IDEAS",
+    "title": "A clearer view begins with a better question.",
+    "intro": "The future IOJH reading room will feature reviewed articles, research guidance and institutional updates. No unpublished post is presented as a live article here.",
+    "topicsEyebrow": "PLANNED EDITORIAL THEMES",
+    "topics": [
+      {
+        "id": "01",
+        "title": "Research design",
+        "desc": "How sound questions become workable studies."
+      },
+      {
+        "id": "02",
+        "title": "Manuscript craft",
+        "desc": "Clarity, structure and responsible reporting."
+      },
+      {
+        "id": "03",
+        "title": "Scholarly publishing",
+        "desc": "Navigating journals with evidence and care."
+      }
+    ],
+    "action": "Visit the insights preview",
+    "endEyebrow": "THE NEXT CONVERSATION",
+    "endTitle": "Where could your next question lead?",
+    "endCopy": "Tell us what you are trying to understand or accomplish. We’ll help you find the right starting point.",
+    "endAction": "Contact IOJH"
+  }
+}
