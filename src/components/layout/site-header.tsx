@@ -16,14 +16,43 @@ function Brand() {
  </Link>;
 }
 
-function ThemeToggle({compact=false}: {compact?: boolean}) {
- const {resolvedTheme,setTheme} = useTheme();
- const t=useTranslations('Nav');
- return <button type="button" className={styles.iconButton} aria-label={t('theme')} onClick={()=>setTheme(resolvedTheme==='dark'?'light':'dark')} title={t('theme')}>
-  {resolvedTheme === 'dark' ? <Sun size={19} strokeWidth={1.65}/> : <Moon size={19} strokeWidth={1.65}/>}
-  {compact && <span className={styles.mobileUtilityLabel}>{t('theme')}</span>}
- </button>;
+
+function ThemeToggle({compact = false}: {compact?: boolean}) {
+  const {resolvedTheme, setTheme} = useTheme();
+  const t = useTranslations('Nav');
+
+  return (
+    <button
+      type="button"
+      className={styles.iconButton}
+      aria-label={t('theme')}
+      title={t('theme')}
+      onClick={() =>
+        setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+      }
+    >
+      <span className={styles.themeIcon} aria-hidden="true">
+        <Sun
+          className={styles.themeSun}
+          size={19}
+          strokeWidth={1.65}
+        />
+        <Moon
+          className={styles.themeMoon}
+          size={19}
+          strokeWidth={1.65}
+        />
+      </span>
+
+      {compact && (
+        <span className={styles.mobileUtilityLabel}>
+          {t('theme')}
+        </span>
+      )}
+    </button>
+  );
 }
+
 
 function LanguageToggle({mobile=false}: {mobile?: boolean}) {
  const locale=useLocale();const pathname=usePathname();const t=useTranslations('Nav');
