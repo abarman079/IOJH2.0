@@ -2,7 +2,7 @@
 
 import {useEffect, useRef, useState} from 'react';
 import {useLocale, useTranslations} from 'next-intl';
-import {useTheme} from 'next-themes';
+import { useTheme } from "@wrksz/themes/client";
 import {ArrowUpRight, ChevronDown, Globe2, Menu, Moon, ShoppingBag, Sun, UserRound, X} from 'lucide-react';
 import {Link, usePathname} from '@/i18n/navigation';
 import {navigation} from '@/content/navigation';
