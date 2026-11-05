@@ -10,5 +10,10 @@ export default defineConfig({
     {name:'desktop-chromium',use:{...devices['Desktop Chrome'],viewport:{width:1440,height:900}}},
     {name:'mobile-chromium',use:{...devices['iPhone 13'],browserName:'chromium'}}
   ],
-  webServer:{command:'pnpm dev --hostname 127.0.0.1',url:'http://127.0.0.1:3000/en',reuseExistingServer:!process.env.CI,timeout:120_000}
+  webServer: {
+  command: 'corepack pnpm dev --hostname 127.0.0.1',
+  url: 'http://127.0.0.1:3000/en',
+  reuseExistingServer: !process.env.CI,
+  timeout: 120_000
+}
 });

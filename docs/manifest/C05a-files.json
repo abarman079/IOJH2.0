@@ -1,0 +1,218 @@
+{
+  "stage": "C05a",
+  "title": "Verified-email customer authentication foundation",
+  "source": "IOJH_Website_Master_Development_Plan_v5.md",
+  "inspected_github_main_commit": "f2ffa3977e91d7f6c308b170f9c1ac02f36cf234",
+  "delivery_type": "overlay (new and modified files only)",
+  "removed_files": [],
+  "important_retained": [
+    "@wrksz/themes 2.1.1",
+    "src/app/[locale]/layout.tsx",
+    "src/app/admin/layout.tsx",
+    "src/components/layout/site-header.tsx",
+    "src/components/layout/site-header.module.css",
+    "next.config.ts (devIndicators: false)",
+    "seven-act homepage"
+  ],
+  "local_lockfile_action": "Run corepack pnpm install to update existing pnpm-lock.yaml (not bundled; npm registry unreachable in authoring environment).",
+  "files": [
+    {
+      "path": ".env.example",
+      "kind": "modified",
+      "bytes": 643,
+      "sha256": "fa984aa334443aae8b7146099b202c5dfcf08ea5822681c96f601e6813b47eb3"
+    },
+    {
+      "path": "docs/acceptance/C05a.md",
+      "kind": "new",
+      "bytes": 4113,
+      "sha256": "25cdc851bb8f5d2bace9a639df3558fbc60cd510cb3830ccfea69425ca2a19bb"
+    },
+    {
+      "path": "docs/adr/C05a-auth.md",
+      "kind": "new",
+      "bytes": 2301,
+      "sha256": "770eeee9e2b3c9d9fb8521be7d43d80d0a9e9f8ccd4cd516635a3b334af81e20"
+    },
+    {
+      "path": "docs/setup/C05a-supabase-windows.md",
+      "kind": "new",
+      "bytes": 7993,
+      "sha256": "ae70551bc635588fc10135f530f1909f18ed78bbe0e25cdc0f76e426f2a39a80"
+    },
+    {
+      "path": "package.json",
+      "kind": "modified",
+      "bytes": 1359,
+      "sha256": "7409b5fba1d82612e9afc12cbbcf535d6680c9a44dff010df276580f1acc36e2"
+    },
+    {
+      "path": "src/app/[locale]/(account)/account/layout.tsx",
+      "kind": "modified",
+      "bytes": 901,
+      "sha256": "c6f6af2ebb483cbedcab4b09bccff966b763da69c8c5f22936ca98399821b3c3"
+    },
+    {
+      "path": "src/app/[locale]/(account)/account/page.tsx",
+      "kind": "modified",
+      "bytes": 1645,
+      "sha256": "d3e9db20181fc7bd808666b480740876956c9438877bc79109f6814fa99f8793"
+    },
+    {
+      "path": "src/app/[locale]/(focused)/auth/callback/route.ts",
+      "kind": "new",
+      "bytes": 1516,
+      "sha256": "bf308c5115400bad22af82062c62528f815ca8e721aa444039075bd06ee062a9"
+    },
+    {
+      "path": "src/app/[locale]/(focused)/auth/confirm/route.ts",
+      "kind": "new",
+      "bytes": 2346,
+      "sha256": "d7ad55ea3a6839141f9669cc22da054946411d2cc87b5731da1baf8f04d35e03"
+    },
+    {
+      "path": "src/app/[locale]/(focused)/forgot-password/page.tsx",
+      "kind": "new",
+      "bytes": 932,
+      "sha256": "919830bb88df5628a4ad2426de929d48554a6e4b15001a65461fe44362d656de"
+    },
+    {
+      "path": "src/app/[locale]/(focused)/layout.tsx",
+      "kind": "modified",
+      "bytes": 782,
+      "sha256": "8293689f69b8cc88884e9c9b6fec676babe71267025ae0b505e20e2c71d3adef"
+    },
+    {
+      "path": "src/app/[locale]/(focused)/reset-password/page.tsx",
+      "kind": "new",
+      "bytes": 1470,
+      "sha256": "6484e26e724734f22e5c0c650f1ec9bdfe23e84e7f1b67ffd3cf018dd0be82b8"
+    },
+    {
+      "path": "src/app/[locale]/(focused)/sign-in/page.tsx",
+      "kind": "modified",
+      "bytes": 1245,
+      "sha256": "81cae003876e05d648f9f53e142b583f0678c69477ae7aa4e82ec6da04d3bed9"
+    },
+    {
+      "path": "src/app/[locale]/(focused)/sign-up/page.tsx",
+      "kind": "new",
+      "bytes": 925,
+      "sha256": "847e0da93a64745bc9dfb0e8eb63887cab9fb9fd07f82514a1dc4ba057dcc273"
+    },
+    {
+      "path": "src/app/[locale]/(focused)/verify-email/page.tsx",
+      "kind": "new",
+      "bytes": 761,
+      "sha256": "ffb4e84d26acce8dabb6f02488947bf448686d7b7d89fd235d3bbdb1a3215792"
+    },
+    {
+      "path": "src/features/auth/actions.ts",
+      "kind": "new",
+      "bytes": 6141,
+      "sha256": "6243e5b61d2d8ea50f980ea8400ed9e5ebed4531a47451a26b5ccd8e9cbce766"
+    },
+    {
+      "path": "src/features/auth/config.ts",
+      "kind": "new",
+      "bytes": 1212,
+      "sha256": "e3de81f98f509f6b205fef6f1aab8557a1d4b4759e8004265884b20c448458a7"
+    },
+    {
+      "path": "src/features/auth/copy.ts",
+      "kind": "new",
+      "bytes": 11301,
+      "sha256": "99e2b4329a653f820382536b976c3b7ed4293fc76da556c7c90f2fbafbccd31e"
+    },
+    {
+      "path": "src/features/auth/recovery-cookie.ts",
+      "kind": "new",
+      "bytes": 969,
+      "sha256": "a52e4cff851923218e623a3047cc1caebbc0ae630723794141b7d6bceea9b966"
+    },
+    {
+      "path": "src/features/auth/recovery-token.d.mts",
+      "kind": "new",
+      "bytes": 193,
+      "sha256": "da595029f91b07a2f69bef16dd382d826222c44b6e97acdc74d2ace5a4262877"
+    },
+    {
+      "path": "src/features/auth/recovery-token.mjs",
+      "kind": "new",
+      "bytes": 1190,
+      "sha256": "e7d2bad2ecd9a539e3a02c83a07ba40347a853a0388f0ceb846efdb1ee9c554e"
+    },
+    {
+      "path": "src/features/auth/safe-return.d.mts",
+      "kind": "new",
+      "bytes": 136,
+      "sha256": "d911063bc65676c75164df444a8b66af6721cb33d69695581c30bc22b173e425"
+    },
+    {
+      "path": "src/features/auth/safe-return.mjs",
+      "kind": "new",
+      "bytes": 561,
+      "sha256": "1a60dd48d7cb962bc6a29e284a46e71d9d46281d6b447b0d805df8019eb63ad0"
+    },
+    {
+      "path": "src/features/auth/ui/auth-controls.tsx",
+      "kind": "new",
+      "bytes": 1309,
+      "sha256": "2e10856248e6bba7c0b89f9169eef5b98e8d064b24bb1e87395f218997a52c3b"
+    },
+    {
+      "path": "src/features/auth/ui/auth-form.tsx",
+      "kind": "new",
+      "bytes": 4215,
+      "sha256": "7c2d8e05eace1b1f07b62c23832fd4a753936ada078e2579e0260644145c85a9"
+    },
+    {
+      "path": "src/features/auth/ui/auth-shell.tsx",
+      "kind": "new",
+      "bytes": 1861,
+      "sha256": "9a5a19024a8d9eec42b4ffdfa31d25651dfc965db21634e04fdeae463f8f5281"
+    },
+    {
+      "path": "src/features/auth/ui/auth.module.css",
+      "kind": "new",
+      "bytes": 7360,
+      "sha256": "7a6e89cca0492309c45f25dc9885c4a2d0574cd3a74af0c24706f19bf63b6841"
+    },
+    {
+      "path": "src/features/auth/validation.ts",
+      "kind": "new",
+      "bytes": 680,
+      "sha256": "cfddb99eb8966494150b73cf35f1d3319d7ecfe3be3921579c06c6847ad53b30"
+    },
+    {
+      "path": "src/lib/supabase/client.ts",
+      "kind": "new",
+      "bytes": 393,
+      "sha256": "a108e5d89bc5d0312399fa3913b16b564e1f5df0013e409f2bbeaff49490d533"
+    },
+    {
+      "path": "src/lib/supabase/server.ts",
+      "kind": "new",
+      "bytes": 859,
+      "sha256": "283081944cb4add1e6149e3d9cbf140ab84b99e29358cc5ae60689c7caca50cf"
+    },
+    {
+      "path": "src/proxy.ts",
+      "kind": "modified",
+      "bytes": 1746,
+      "sha256": "ef8e7adcdd53bec176400141de3f91cb2c261371c441eafbf328313a64e6a687"
+    },
+    {
+      "path": "tests/e2e/c05a-auth.spec.ts",
+      "kind": "new",
+      "bytes": 2176,
+      "sha256": "d0d8ee18d75bac11f0859c525008780a928d574aeaef34818135ed15ea4879c5"
+    },
+    {
+      "path": "tests/unit/c05a-auth.test.mjs",
+      "kind": "new",
+      "bytes": 1714,
+      "sha256": "0a4a9ed1c684840883a96f966a59c68dadaf4ef002a5e5dbe2229f12b69fd443"
+    }
+  ]
+}
