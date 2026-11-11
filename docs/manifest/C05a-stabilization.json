@@ -1,0 +1,25 @@
+{
+  "stage": "C05a-stabilization",
+  "base_commit": "a3fbd1f5749e1acce852a288596d71ae727a0387",
+  "modified": [
+    "src/app/[locale]/(focused)/reset-password/page.tsx",
+    "src/app/[locale]/(focused)/auth/confirm/route.ts",
+    "src/features/auth/actions.ts",
+    "src/features/auth/copy.ts",
+    "src/features/auth/recovery-cookie.ts",
+    "src/features/auth/recovery-token.mjs",
+    "src/features/auth/recovery-token.d.mts",
+    "tests/e2e/c05a-auth.spec.ts",
+    "tests/unit/c05a-auth.test.mjs"
+  ],
+  "new": [
+    "docs/acceptance/C05a-stabilization.md",
+    "docs/manifest/C05a-stabilization.json"
+  ],
+  "removed": [],
+  "dependencies_changed": false,
+  "migration_required": false,
+  "secret_changes_required": false,
+  "theme_system_changed": false,
+  "admin_paths_changed": false
+}

@@ -10,14 +10,31 @@ import { AuthForm } from "@/features/auth/ui/auth-form";
 import styles from "@/features/auth/ui/auth.module.css";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Set a new password — IOJH", robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: "Password recovery — IOJH",
+  robots: { index: false, follow: false },
+};
+
 export default async function ResetPassword({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   const t = getAuthCopy(locale);
-  const client = await createServerSupabaseClient();
-  const { data } = client ? await client.auth.getUser().catch(() => ({ data: { user: null } })) : { data: { user: null } };
-  const validProof = data.user ? await hasRecoveryProof(data.user.id) : false;
-  return <AuthShell locale={locale} title={t.resetTitle} intro={t.resetIntro}>
-    {!isAuthReady() || !data.user || !validProof ? <div className={styles.messagePanel}><p>{!isAuthReady() ? t.notConfigured : t.recoveryNeeded}</p><Link href="/forgot-password">{t.forgotLink}</Link></div> : <AuthForm locale={locale} mode="reset" />}
+  const ready = isAuthReady();
+  const client = ready ? await createServerSupabaseClient() : null;
+  const { data } = client
+    ? await client.auth.getUser().catch(() => ({ data: { user: null } }))
+    : { data: { user: null } };
+  const user = data.user;
+  // A normal signed-in user is NOT automatically authorized to reset a password.
+  const authorized = Boolean(ready && user?.updated_at &&
+    await hasRecoveryProof(user.id, user.updated_at));
+  const title = !ready ? t.resetDisabledTitle : authorized ? t.resetTitle : t.resetDeniedTitle;
+  const intro = !ready ? t.resetDisabledIntro : authorized ? t.resetIntro : t.resetDeniedIntro;
+
+  return <AuthShell locale={locale} title={title} intro={intro}>
+    {authorized ? <AuthForm locale={locale} mode="reset" /> :
+      <div className={styles.messagePanel} role="status">
+        <p>{!ready ? t.notConfigured : t.recoveryNeeded}</p>
+        <Link href="/forgot-password">{t.requestNewRecovery}</Link>
+      </div>}
   </AuthShell>;
 }

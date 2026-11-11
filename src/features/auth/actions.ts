@@ -6,6 +6,7 @@ import { getSiteOrigin, isAuthReady } from "@/features/auth/config";
 import { newPasswordSchema, recoverSchema, signInSchema, signUpSchema } from "@/features/auth/validation";
 import { safeAccountReturn, validLocale } from "@/features/auth/safe-return.mjs";
 import { clearRecoveryProof, hasRecoveryProof, isRecoveryReady } from "@/features/auth/recovery-cookie";
+import { setResetNotice } from "@/features/auth/reset-notice-cookie";
 
 export type AuthErrorCode = "not_configured" | "validation" | "password_mismatch" |
   "credentials" | "verify_required" | "unavailable" | "rate_limit" | "reset_required";
@@ -82,20 +83,64 @@ export async function requestRecoveryAction(_prev: AuthState, formData: FormData
 }
 
 export async function changePasswordAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const locale = localeOf(formData);
   const parsed = newPasswordSchema.safeParse({ password: secretOf(formData, "password"), confirmPassword: secretOf(formData, "confirmPassword") });
   if (!parsed.success) return invalidResult(parsed.error);
   const client = await createServerSupabaseClient();
   if (!client || !isAuthReady()) return { status: "error", code: "not_configured" };
+
+  // Keep mutation errors separate from cleanup errors. Once Supabase accepts the
+  // password change, never tell the user that the password change failed.
   try {
     const { data, error: userError } = await client.auth.getUser();
-    if (userError || !data.user || !(await hasRecoveryProof(data.user.id))) return { status: "error", code: "reset_required" };
+    if (userError || !data.user?.updated_at ||
+        !(await hasRecoveryProof(data.user.id, data.user.updated_at))) {
+      return { status: "error", code: "reset_required" };
+    }
     const { error } = await client.auth.updateUser({ password: parsed.data.password });
     if (error) return providerError(error);
+  } catch {
+    // The caller cannot determine whether the provider applied an ambiguous
+    // network failure. Do not claim success without a provider confirmation.
+    return { status: "error", code: "unavailable" };
+  }
+
+  let proofCleared = false;
+  try {
     await clearRecoveryProof();
-    const { error: outError } = await client.auth.signOut({ scope: "global" });
-    if (outError) await client.auth.signOut({ scope: "local" });
-    return { status: "success", code: "password_changed" };
-  } catch { return { status: "error", code: "unavailable" }; }
+    proofCleared = true;
+  } catch {
+    // The Auth revision still guards future uses of the old proof. Preserve
+    // an accurate cleanup warning rather than misreporting password failure.
+  }
+
+  let signedOut = false;
+  try {
+    const { error } = await client.auth.signOut({ scope: "global" });
+    if (!error) signedOut = true;
+  } catch {
+    // Attempt a local sign-out if the provider-wide sign-out failed.
+  }
+  if (!signedOut) {
+    try {
+      const { error } = await client.auth.signOut({ scope: "local" });
+      signedOut = !error;
+    } catch {
+      // Affected sessions must not be represented as safely signed out.
+    }
+  }
+
+  // Redirect to a separate sign-in screen. Deleting the recovery cookie causes
+  // Next.js to re-render /reset-password as "link not active" otherwise, even
+  // after a successful password change. A short-lived signed notice avoids
+  // allowing an arbitrary ?success=1 URL to fabricate success.
+  try {
+    await setResetNotice(locale, proofCleared && signedOut ? "changed" : "cleanup_unconfirmed");
+  } catch {
+    // Password is already changed; missing notice must not be reported as a
+    // password-update error. Sign-in remains the safe destination.
+  }
+  redirect(`/${locale}/sign-in`);
 }
 
 export async function signOutAction(formData: FormData): Promise<void> {

@@ -25,8 +25,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           const response = NextResponse.redirect(new URL(destination, site), { status: 303, headers: { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" } });
           if (type === "recovery") {
             const { data } = await client.auth.getUser();
-            if (!data.user) return NextResponse.redirect(new URL(`/${locale}/sign-in?error=invalid-link`, site), { status: 303 });
-            const proof = recoveryCookieForUser(data.user.id);
+            // A freshly verified Auth user with an update revision is mandatory.
+            // Without it we cannot issue a proof that expires on password change.
+            if (!data.user?.updated_at) {
+              await client.auth.signOut({ scope: "local" }).catch(() => undefined);
+              return NextResponse.redirect(new URL(`/${locale}/sign-in?error=invalid-link`, site), { status: 303, headers: { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" } });
+            }
+            const proof = recoveryCookieForUser(data.user.id, data.user.updated_at);
             response.cookies.set(proof.name, proof.value, proof.options);
           }
           return response;

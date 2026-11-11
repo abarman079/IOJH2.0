@@ -10,6 +10,12 @@ export const authCopy = {
     signUpTitle: "Start with your identity.", signUpIntro: "Create a personal account for future IOJH learning and services.",
     forgotTitle: "Find your way back.", forgotIntro: "Enter your account email to request a secure password reset link.",
     resetTitle: "Choose a new password.", resetIntro: "Your recovery link has been verified. Set a new password, then sign in again.",
+    resetDeniedTitle: "Your recovery link is not active.",
+    resetDeniedIntro: "For your security, changing a password requires a current, verified recovery link.",
+    resetDisabledTitle: "Password recovery is unavailable.",
+    resetDisabledIntro: "Account recovery is temporarily unavailable. Your public IOJH website access is unaffected.",
+    requestNewRecovery: "Request a new reset link",
+    resetCleanupWarning: "Your password was updated, but we could not confirm all session cleanup. For security, review your other device sessions.",
     verifyTitle: "Check your inbox.", verifyIntro: "If registration was accepted, follow the verification link sent to your email address. You must verify your email before account access.",
     email: "Email address", password: "Password", confirm: "Confirm password", show: "Show password", hide: "Hide password",
     signIn: "Sign in", signUp: "Create account", recover: "Send recovery instructions", update: "Save new password",
@@ -33,7 +39,7 @@ export const authCopy = {
     notConfigured: "Account access is not enabled until the owner configures the IOJH Supabase Auth project. The public site remains available.",
     accountEyebrow: "PRIVATE / ACCOUNT", accountTitle: "Your IOJH account.", accountBody: "Your identity is verified. Course enrollment, book orders, mentorship and account preferences will be added in later development packets.",
     verified: "Email verified", signOut: "Sign out", inactive: "Not yet available", setup: "Authentication setup required", privacy: "No payment or course access is enabled in this authentication stage.",
-    recoveryNeeded: "Open the valid password reset link from your email to continue. If it expired, request a new link.",
+    recoveryNeeded: "No usable recovery authorization was found. Your link may be missing, expired, or already used. Request a fresh link to continue.",
     callbackError: "This email link is invalid or expired. You can request a new recovery link or sign in if your email is already verified."
   },
   bn: {
@@ -45,6 +51,12 @@ export const authCopy = {
     signUpTitle: "আপনার পরিচয় দিয়ে শুরু করুন।", signUpIntro: "ভবিষ্যতের IOJH শিক্ষা ও সেবার জন্য ব্যক্তিগত অ্যাকাউন্ট তৈরি করুন।",
     forgotTitle: "আবার প্রবেশ করুন।", forgotIntro: "নিরাপদ পাসওয়ার্ড পুনর্নির্ধারণের লিংক পেতে অ্যাকাউন্টের ইমেইল লিখুন।",
     resetTitle: "নতুন পাসওয়ার্ড নির্ধারণ করুন।", resetIntro: "আপনার পুনরুদ্ধার লিংক যাচাই হয়েছে। নতুন পাসওয়ার্ড দিয়ে পরে আবার সাইন ইন করুন।",
+    resetDeniedTitle: "পাসওয়ার্ড পুনরুদ্ধার লিংকটি সক্রিয় নয়।",
+    resetDeniedIntro: "নিরাপত্তার জন্য পাসওয়ার্ড পরিবর্তনের আগে বর্তমান পুনরুদ্ধার লিংক যাচাই করা প্রয়োজন।",
+    resetDisabledTitle: "পাসওয়ার্ড পুনরুদ্ধার এখন সম্ভব নয়।",
+    resetDisabledIntro: "অ্যাকাউন্ট পুনরুদ্ধার সাময়িকভাবে বন্ধ রয়েছে। IOJH-এর মূল ওয়েবসাইট ব্যবহার করতে পারবেন।",
+    requestNewRecovery: "নতুন পাসওয়ার্ড পুনরুদ্ধার লিংক নিন",
+    resetCleanupWarning: "আপনার পাসওয়ার্ড পরিবর্তন হয়েছে, কিন্তু সব সেশন পরিষ্কার হয়েছে কি না নিশ্চিত করা যায়নি। নিরাপত্তার জন্য অন্য ডিভাইসের সেশন যাচাই করুন।",
     verifyTitle: "ইমেইল দেখুন।", verifyIntro: "নিবন্ধন গ্রহণ করা হলে ইমেইলে পাঠানো যাচাইকরণ লিংক ব্যবহার করুন। অ্যাকাউন্টে প্রবেশের আগে ইমেইল যাচাই করতে হবে।",
     email: "ইমেইল ঠিকানা", password: "পাসওয়ার্ড", confirm: "পাসওয়ার্ড নিশ্চিত করুন", show: "পাসওয়ার্ড দেখান", hide: "পাসওয়ার্ড আড়াল করুন",
     signIn: "সাইন ইন", signUp: "অ্যাকাউন্ট তৈরি করুন", recover: "পুনরুদ্ধারের নির্দেশনা পাঠান", update: "নতুন পাসওয়ার্ড সংরক্ষণ করুন",
@@ -68,7 +80,7 @@ export const authCopy = {
     notConfigured: "IOJH-এর Supabase Auth প্রকল্প কনফিগার না হওয়া পর্যন্ত অ্যাকাউন্ট সেবা চালু হবে না। মূল ওয়েবসাইট ব্যবহার করা যাবে।",
     accountEyebrow: "ব্যক্তিগত / অ্যাকাউন্ট", accountTitle: "আপনার IOJH অ্যাকাউন্ট।", accountBody: "আপনার পরিচয় যাচাই হয়েছে। কোর্স, বইয়ের অর্ডার, মেন্টরশিপ ও সেটিংস পরবর্তী উন্নয়ন ধাপে যোগ হবে।",
     verified: "ইমেইল যাচাইকৃত", signOut: "সাইন আউট", inactive: "এখনো চালু নয়", setup: "অ্যাকাউন্টের সেটআপ প্রয়োজন", privacy: "এই ধাপে পেমেন্ট বা কোর্সে প্রবেশের ব্যবস্থা চালু নয়।",
-    recoveryNeeded: "ইমেইলের বৈধ পাসওয়ার্ড পুনরুদ্ধার লিংক খুলুন। মেয়াদ শেষ হলে নতুন লিংকের অনুরোধ করুন।",
+    recoveryNeeded: "ব্যবহারযোগ্য পুনরুদ্ধার অনুমোদন পাওয়া যায়নি। লিংকটি অনুপস্থিত, মেয়াদোত্তীর্ণ বা আগে ব্যবহৃত হয়ে থাকতে পারে। নতুন লিংক নিন।",
     callbackError: "এই ইমেইল লিংকটি অবৈধ বা এর মেয়াদ শেষ। নতুন লিংক চাইতে পারেন কিংবা যাচাইকৃত ইমেইল দিয়ে সাইন ইন করুন।"
   }
 } as const;

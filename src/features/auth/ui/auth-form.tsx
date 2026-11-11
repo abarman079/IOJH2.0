@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useSyncExternalStore } from "react";
 import { useFormStatus } from "react-dom";
 import { Eye, EyeOff, ArrowRight, LockKeyhole } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -10,6 +10,13 @@ import { changePasswordAction, requestRecoveryAction, signInAction, signUpAction
 import type { AuthErrorCode, AuthSuccessCode, AuthState } from "@/features/auth/actions";
 const initialAuthState: AuthState = { status: "idle" };
 import styles from "./auth.module.css";
+
+// Server-rendered controls can be clicked before React hydrates them. Keep the
+// client-only disclosure control disabled until its event handler is attached.
+// This avoids lost early clicks without relying on arbitrary test delays.
+const subscribeToHydration = () => () => {};
+const getClientHydrationSnapshot = () => true;
+const getServerHydrationSnapshot = () => false;
 
 type Mode = "sign-in" | "sign-up" | "forgot" | "reset";
 const actions = { "sign-in": signInAction, "sign-up": signUpAction, forgot: requestRecoveryAction, reset: changePasswordAction };
@@ -23,6 +30,11 @@ export function AuthForm({ locale, mode, next = "" }: { locale: Locale; mode: Mo
   const t = getAuthCopy(locale);
   const [state, formAction] = useActionState(actions[mode], initialAuthState);
   const [showPassword, setShowPassword] = useState(false);
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    getClientHydrationSnapshot,
+    getServerHydrationSnapshot,
+  );
   const needsEmail = mode !== "reset";
   const needsPassword = mode !== "forgot";
   const needsConfirm = mode === "sign-up" || mode === "reset";
@@ -38,7 +50,7 @@ export function AuthForm({ locale, mode, next = "" }: { locale: Locale; mode: Mo
       {needsPassword && <div className={styles.field}>
         <label htmlFor={`auth-${mode}-password`}>{t.password}</label>
         <div className={styles.passwordField}><input id={`auth-${mode}-password`} name="password" type={passwordType} autoComplete={mode === "sign-in" ? "current-password" : "new-password"} minLength={mode === "sign-in" ? 1 : 10} maxLength={128} required />
-          <button type="button" className={styles.reveal} aria-label={showPassword ? t.hide : t.show} aria-pressed={showPassword} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={19} /> : <Eye size={19} />}</button>
+          <button type="button" className={styles.reveal} disabled={!hydrated} aria-label={showPassword ? t.hide : t.show} aria-pressed={showPassword} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={19} /> : <Eye size={19} />}</button>
         </div>
         {mode !== "sign-in" && <span className={styles.hint}>{t.passwordHint}</span>}
       </div>}

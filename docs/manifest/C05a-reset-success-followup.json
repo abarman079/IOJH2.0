@@ -1,0 +1,23 @@
+{
+  "stage": "C05a-post-reset-success-followup",
+  "prerequisite": "Owner already installed IOJH2_C05a_Final_Stabilization_Patch.zip on local GitHub commit a3fbd1f5749e1acce852a288596d71ae727a0387; do not apply this patch to the old baseline alone",
+  "modified": [
+    "src/features/auth/actions.ts",
+    "src/app/[locale]/(focused)/sign-in/page.tsx",
+    "tests/unit/c05a-auth.test.mjs",
+    "tests/e2e/c05a-auth.spec.ts",
+    "src/features/auth/copy.ts"
+  ],
+  "new": [
+    "src/features/auth/reset-notice.mjs",
+    "src/features/auth/reset-notice.d.mts",
+    "src/features/auth/reset-notice-cookie.ts",
+    "docs/acceptance/C05a-reset-success-followup.md",
+    "docs/manifest/C05a-reset-success-followup.json"
+  ],
+  "removed": [],
+  "new_dependencies": [],
+  "new_env_vars": [],
+  "db_migrations": [],
+  "limitations": "Manual live Supabase and Next.js production build still owner-required"
+}
