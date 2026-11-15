@@ -40,9 +40,27 @@ test('theme switch is hydration safe on identity page', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-theme', /^(light|dark)$/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
-test('administrator routes remain inaccessible in C05a', async ({ page }) => {
-  expect((await page.goto('/admin'))?.status()).toBe(404);
-  expect((await page.goto('/admin/sign-in'))?.status()).toBe(404);
+test('administrator workspace denies anonymous access in C05b', async ({ page, request }) => {
+  await page.goto('/admin');
+
+  // An anonymous visitor must be redirected away from the workspace.
+  await expect(page).toHaveURL(/\/admin\/sign-in(?:\/|\?|$)/);
+
+  // Privileged workspace content must never be visible.
+  await expect(
+    page.getByText('Administrative access is protected.')
+  ).toHaveCount(0);
+
+  // The administrator sign-in page is now a legitimate public route.
+  await page.goto('/admin/sign-in');
+  await expect(
+    page.getByRole('heading', { name: 'Secure administrator sign-in.' })
+  ).toBeVisible();
+
+  // The server-side authorization check must deny anonymous requests.
+  const response = await request.get('/api/admin/security-check');
+  expect(response.status()).toBe(401);
+  expect(await response.json()).toEqual({ authorized: false });
 });
 
 for (const locale of ["en", "bn"] as const) {

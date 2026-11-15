@@ -1,0 +1,33 @@
+{
+  "stage": "C05b",
+  "baseline_commit": "182b94683700e8746d8132f4a1866ad9c45052c6",
+  "new": [
+    "supabase/migrations/202611110001_c05b_admin_identity.sql",
+    "src/features/admin/authorization.ts",
+    "src/app/admin/mfa/page.tsx",
+    "src/features/admin/ui/admin-sign-in.tsx",
+    "src/features/admin/ui/admin-mfa.tsx",
+    "src/features/admin/ui/admin-sign-out.tsx",
+    "src/app/admin/admin.css",
+    "tests/e2e/c05b-admin.spec.ts",
+    "tests/unit/c05b-security.test.mjs",
+    "supabase/tests/c05b_admin_security.sql",
+    "src/app/api/admin/security-check/route.ts",
+    "docs/setup/C05b-windows-and-supabase.md",
+    "docs/security/C05b-owner-recovery.md",
+    "docs/acceptance/C05b.md",
+    "docs/verification/C05b-local.md"
+  ],
+  "modified": [
+    "src/app/admin/layout.tsx",
+    "src/app/admin/page.tsx",
+    "src/app/admin/sign-in/page.tsx",
+    "src/proxy.ts"
+  ],
+  "deleted": [],
+  "dependencies_changed": false,
+  "env_changed": false,
+  "migration": "supabase/migrations/202611110001_c05b_admin_identity.sql",
+  "requires_owner_sql_and_mfa": true,
+  "remote_changes_performed": false
+}
