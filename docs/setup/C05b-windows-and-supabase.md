@@ -1,3 +1,5 @@
+> **C05c follow-up:** After applying the C05c hardening migration, owner membership grants/revocations must include a transaction-local `iojh.admin_change_reason` (see updated SQL below and `docs/security/C05c-owner-recovery.md`). Do not rerun C05b migration.
+
 # C05b owner installation — IOJH 2.0
 
 **Scope:** Existing `main` SHA `182b94683700e8746d8132f4a1866ad9c45052c6`. This ZIP is a patch, not a new repository. Do not use a second project directory.
@@ -54,6 +56,9 @@ Before provisioning, create one normal customer identity using your existing sig
 ```sql
 begin;
 select pg_advisory_xact_lock(5705205);
+-- After the C05c migration, privileged membership edits require an audit reason.
+select set_config('iojh.admin_change_reason',
+  'Owner-approved initial administrator grant: private incident reference', true);
 -- Confirm there is currently no active administrator before first grant.
 do $$ begin
  if exists (select 1 from private.admin_memberships where active) then

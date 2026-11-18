@@ -19,11 +19,16 @@ Only an IOJH-owner-authorized operator with existing privileged Supabase project
 
 ### Atomic owner-approved replacement sketch (development first)
 
+**C05c amendment:** Membership grants, revocations and replacements now require an owner-authorized transaction-local audit reason, and membership records cannot be deleted. Preserve a separate private incident log naming the verified human operator; the database `session_user` field identifies the SQL role, not the human.
+
 Run only after independent owner authorization and verification of both UUIDs in the intended database:
 
 ```sql
 begin;
 select pg_advisory_xact_lock(5705205);
+-- C05c requires a transaction-local audit reason (8–500 characters).
+select set_config('iojh.admin_change_reason',
+  'Owner-approved recovery: record private incident reference here', true);
 update private.admin_memberships
   set active=false, revoked_at=now()
   where active=true;

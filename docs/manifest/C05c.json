@@ -1,0 +1,58 @@
+{
+  "package": "IOJH2_C05c_Security_Hardening_Integration.zip",
+  "verified_baseline_commit": "0abd4c2644cff58828ddfddbdb1887e575a4141f",
+  "stage": "C05c",
+  "description": "Additive database AAL2/current-factor + membership-audit hardening, disposable pgTAP, read-only verification, app regressions and owner runbooks",
+  "database_migration": "supabase/migrations/202611150001_c05c_authz_hardening.sql",
+  "dependency_migrations_already_applied": [
+    "supabase/migrations/202611110001_c05b_admin_identity.sql"
+  ],
+  "dependencies_added": [],
+  "environment_variables_added": [],
+  "deleted_files": [],
+  "modified_files": [
+    {
+      "path": "docs/security/C05b-owner-recovery.md",
+      "baseline_git_blob_sha": "b643a0cf022fd2efd40dc786e2a13417dfb5006c"
+    },
+    {
+      "path": "docs/setup/C05b-windows-and-supabase.md",
+      "baseline_git_blob_sha": "e05a7c0d8ebbc7fddf57c20e0e37d2f413070427"
+    }
+  ],
+  "added_files": [
+    "docs/acceptance/C05c.md",
+    "docs/manifest/C05c.json",
+    "docs/security/C05c-owner-recovery.md",
+    "docs/security/C05c-threat-review.md",
+    "docs/setup/C05c-windows-supabase.md",
+    "docs/verification/C05c-execution.md",
+    "supabase/migrations/202611150001_c05c_authz_hardening.sql",
+    "supabase/tests/c05c_admin_security.sql",
+    "supabase/verify/c05c_readonly_verification.sql",
+    "tests/e2e/c05c-admin.spec.ts",
+    "tests/unit/c05c-security.test.mjs"
+  ],
+  "files": [
+    "docs/acceptance/C05c.md",
+    "docs/manifest/C05c.json",
+    "docs/security/C05b-owner-recovery.md",
+    "docs/security/C05c-owner-recovery.md",
+    "docs/security/C05c-threat-review.md",
+    "docs/setup/C05b-windows-and-supabase.md",
+    "docs/setup/C05c-windows-supabase.md",
+    "docs/verification/C05c-execution.md",
+    "supabase/migrations/202611150001_c05c_authz_hardening.sql",
+    "supabase/tests/c05c_admin_security.sql",
+    "supabase/verify/c05c_readonly_verification.sql",
+    "tests/e2e/c05c-admin.spec.ts",
+    "tests/unit/c05c-security.test.mjs"
+  ],
+  "does_not_apply_hosted_migration": true,
+  "does_not_push_github": true,
+  "verification": {
+    "node_unit_offline_reconstruction": "23 passed",
+    "typescript_syntax": "parsed",
+    "postgres_and_nextjs": "not executed here; owner must verify"
+  }
+}
