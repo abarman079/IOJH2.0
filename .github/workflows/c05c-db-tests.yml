@@ -1,31 +1,39 @@
-
-name: C05c Database Security Tests
+name: IOJH Database Security — C05c and C06
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/**'
+      - '.github/workflows/c05c-db-tests.yml'
   push:
-    branches:
-      - c05c-db-security
+    branches: [main, 'c06-*', 'c05c-db-security']
+    paths:
+      - 'supabase/**'
+      - '.github/workflows/c05c-db-tests.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: iojh-db-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   database-security:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
+    timeout-minutes: 35
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-
-      - name: Install Supabase CLI
+      - name: Install pinned Supabase CLI
         uses: supabase/setup-cli@v1
         with:
           version: 2.122.1
-
-      - name: Start disposable local database
+      - name: Start disposable local PostgreSQL
         run: supabase db start
-
-      - name: Run 30 C05c pgTAP assertions
+      - name: Test C05c authorization foundation
         run: supabase test db supabase/tests/c05c_admin_security.sql
+      - name: Test C06 CMS and Storage isolation
+        run: supabase test db supabase/tests/c06_cms_security.sql
