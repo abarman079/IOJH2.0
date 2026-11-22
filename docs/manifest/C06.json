@@ -1,0 +1,75 @@
+{
+  "stage": "C06a+C06b+C06c",
+  "project": "IOJH 2.0 Official Website",
+  "baseline_sha": "decb37099886dc5622cc98e4f42b0716db38c7ae",
+  "generated_date": "2026-11-18",
+  "archive": "IOJH2_C06_CMS_Data_Revisions_Media_Integration.zip",
+  "modified": [
+    ".env.example",
+    ".github/workflows/c05c-db-tests.yml",
+    ".gitignore",
+    "src/app/admin/page.tsx"
+  ],
+  "added": [
+    "docs/acceptance/C06.md",
+    "docs/adr/C06-cms-and-storage.md",
+    "docs/manifest/README-C06.txt",
+    "docs/security/C06-security-review.md",
+    "docs/setup/C06-windows-supabase.md",
+    "docs/verification/C06-execution.md",
+    "src/app/[locale]/(public)/research-notes/[slug]/page.tsx",
+    "src/app/admin/media/page.tsx",
+    "src/app/api/admin/cms/entities/route.ts",
+    "src/app/api/admin/cms/media/[id]/route.ts",
+    "src/app/api/admin/cms/media/route.ts",
+    "src/app/api/admin/cms/revisions/route.ts",
+    "src/app/api/cms/media/[id]/route.ts",
+    "src/app/api/cms/pages/[locale]/[slug]/route.ts",
+    "src/features/content/public.ts",
+    "src/features/content/safety.d.mts",
+    "src/features/content/safety.mjs",
+    "src/features/content/schemas.ts",
+    "src/features/content/server/commands.ts",
+    "src/features/content/server/http.ts",
+    "src/features/content/server/media.ts",
+    "src/features/content/server/storage.ts",
+    "src/features/content/ui/content-renderer.tsx",
+    "src/features/content/ui/media-studio.module.css",
+    "src/features/content/ui/media-studio.tsx",
+    "src/features/content/ui/published.module.css",
+    "supabase/migrations/202611180001_c06_cms_core.sql",
+    "supabase/migrations/202611180002_c06_media_storage.sql",
+    "supabase/tests/c06_cms_security.sql",
+    "supabase/verify/c06_readonly_postflight.sql",
+    "supabase/verify/c06_readonly_preflight.sql",
+    "supabase/verify/c06_storage_orphans_readonly.sql",
+    "tests/e2e/c06-cms.spec.ts",
+    "tests/fixtures/c06/small.jpg",
+    "tests/fixtures/c06/small.png",
+    "tests/fixtures/c06/small.webp",
+    "tests/unit/c06-content-safety.test.mjs",
+    "docs/manifest/C06.json"
+  ],
+  "deleted": [],
+  "renamed": [],
+  "new_runtime_dependencies": [],
+  "new_dev_dependencies": [],
+  "new_environment_variables": [
+    "IOJH_CMS_STORAGE_SERVICE_KEY (server-only, owner-controlled; do not commit a real value)"
+  ],
+  "migrations_in_order": [
+    "supabase/migrations/202611180001_c06_cms_core.sql",
+    "supabase/migrations/202611180002_c06_media_storage.sql"
+  ],
+  "prior_migrations_already_applied": [
+    "202611110001",
+    "202611150001"
+  ],
+  "runtime_compatibility": "Keeps Next.js 16.4.3, React 19.3.1, Supabase SSR 0.12.7, existing theme and C05 auth.",
+  "owner_acceptance": "pending local build, browser, disposable database and owner-configured development Supabase review",
+  "warnings": [
+    "No hosted migration or Git push performed",
+    "One server-only service role/secret key is required for media operations",
+    "C08 full publishing UI and C07 outbox not implemented"
+  ]
+}

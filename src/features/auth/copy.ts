@@ -18,6 +18,7 @@ export const authCopy = {
     resetCleanupWarning: "Your password was updated, but we could not confirm all session cleanup. For security, review your other device sessions.",
     verifyTitle: "Check your inbox.", verifyIntro: "If registration was accepted, follow the verification link sent to your email address. You must verify your email before account access.",
     email: "Email address", password: "Password", confirm: "Confirm password", show: "Show password", hide: "Hide password",
+    mfaCodeLabel: "Authenticator code", mfaCodeHint: "Enter the current six-digit code from your existing authenticator app. Do not share it.",
     signIn: "Sign in", signUp: "Create account", recover: "Send recovery instructions", update: "Save new password",
     signInLink: "Already have an account? Sign in", signUpLink: "New to IOJH? Create an account", forgotLink: "Forgot your password?", verifyBack: "Go to sign in",
     passwordHint: "At least 10 characters. Choose a unique password.",
@@ -29,7 +30,9 @@ export const authCopy = {
       verify_required: "Verify your email address before signing in.",
       unavailable: "The authentication service could not complete this request. Please try again later.",
       rate_limit: "Too many attempts. Please wait and try again later.",
-      reset_required: "Your recovery session has expired or is missing. Request a fresh password reset link."
+      reset_required: "Your recovery session has expired or is missing. Request a fresh password reset link.",
+      mfa_required: "A current six-digit authenticator code is required for this account. Request a fresh recovery link if the session is no longer active.",
+      mfa_invalid: "Authenticator verification failed. Check your six-digit code and try again while the recovery link is active."
     },
     success: {
       check_email: "If registration was accepted, check your inbox to verify your email. Account access requires verification.",
@@ -59,6 +62,7 @@ export const authCopy = {
     resetCleanupWarning: "আপনার পাসওয়ার্ড পরিবর্তন হয়েছে, কিন্তু সব সেশন পরিষ্কার হয়েছে কি না নিশ্চিত করা যায়নি। নিরাপত্তার জন্য অন্য ডিভাইসের সেশন যাচাই করুন।",
     verifyTitle: "ইমেইল দেখুন।", verifyIntro: "নিবন্ধন গ্রহণ করা হলে ইমেইলে পাঠানো যাচাইকরণ লিংক ব্যবহার করুন। অ্যাকাউন্টে প্রবেশের আগে ইমেইল যাচাই করতে হবে।",
     email: "ইমেইল ঠিকানা", password: "পাসওয়ার্ড", confirm: "পাসওয়ার্ড নিশ্চিত করুন", show: "পাসওয়ার্ড দেখান", hide: "পাসওয়ার্ড আড়াল করুন",
+    mfaCodeLabel: "অথেন্টিকেটর কোড", mfaCodeHint: "আপনার বিদ্যমান অথেন্টিকেটর অ্যাপ থেকে বর্তমান ছয় সংখ্যার কোড দিন। কোডটি কাউকে জানাবেন না।",
     signIn: "সাইন ইন", signUp: "অ্যাকাউন্ট তৈরি করুন", recover: "পুনরুদ্ধারের নির্দেশনা পাঠান", update: "নতুন পাসওয়ার্ড সংরক্ষণ করুন",
     signInLink: "অ্যাকাউন্ট আছে? সাইন ইন করুন", signUpLink: "নতুন ব্যবহারকারী? অ্যাকাউন্ট তৈরি করুন", forgotLink: "পাসওয়ার্ড ভুলে গেছেন?", verifyBack: "সাইন ইনে ফিরে যান",
     passwordHint: "কমপক্ষে ১০ অক্ষর। অন্য কোথাও ব্যবহার করেননি এমন পাসওয়ার্ড দিন।",
@@ -70,7 +74,9 @@ export const authCopy = {
       verify_required: "সাইন ইন করার আগে ইমেইল যাচাই করুন।",
       unavailable: "এখন পরিচয় যাচাই সেবাটি ব্যবহার করা যাচ্ছে না। পরে আবার চেষ্টা করুন।",
       rate_limit: "অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।",
-      reset_required: "পাসওয়ার্ড পুনরুদ্ধার সেশন পাওয়া যায়নি বা মেয়াদ শেষ। নতুন লিংক নিন।"
+      reset_required: "পাসওয়ার্ড পুনরুদ্ধার সেশন পাওয়া যায়নি বা মেয়াদ শেষ। নতুন লিংক নিন।",
+      mfa_required: "এই অ্যাকাউন্টের জন্য বর্তমান ছয় সংখ্যার অথেন্টিকেটর কোড প্রয়োজন। সেশনের মেয়াদ শেষ হলে নতুন পুনরুদ্ধার লিংক নিন।",
+      mfa_invalid: "অথেন্টিকেটর যাচাই ব্যর্থ হয়েছে। বর্তমান ছয় সংখ্যার কোড আবার পরীক্ষা করুন।"
     },
     success: {
       check_email: "নিবন্ধন গ্রহণ করা হলে ইমেইলে যাচাইকরণের নির্দেশনা পাবেন। যাচাই ছাড়া অ্যাকাউন্টে প্রবেশ করা যাবে না।",

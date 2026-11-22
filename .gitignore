@@ -16,3 +16,8 @@ next-env.d.ts
 Thumbs.db
 playwright-report
 /test-results
+
+# C06: owner-local database backups and security diagnostics must never be committed.
+.local-backups/
+*.sql.backup
+*.dump
