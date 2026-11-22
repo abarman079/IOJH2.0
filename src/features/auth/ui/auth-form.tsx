@@ -26,7 +26,7 @@ function Submit({ label }: { label: string }) {
   return <button className={styles.submit} type="submit" disabled={pending} aria-busy={pending}>{label}<ArrowRight size={19} aria-hidden="true" /></button>;
 }
 
-export function AuthForm({ locale, mode, next = "" }: { locale: Locale; mode: Mode; next?: string }) {
+export function AuthForm({ locale, mode, next = "", requiresMfa = false }: { locale: Locale; mode: Mode; next?: string; requiresMfa?: boolean }) {
   const t = getAuthCopy(locale);
   const [state, formAction] = useActionState(actions[mode], initialAuthState);
   const [showPassword, setShowPassword] = useState(false);
@@ -55,6 +55,13 @@ export function AuthForm({ locale, mode, next = "" }: { locale: Locale; mode: Mo
         {mode !== "sign-in" && <span className={styles.hint}>{t.passwordHint}</span>}
       </div>}
       {needsConfirm && <div className={styles.field}><label htmlFor={`auth-${mode}-confirm`}>{t.confirm}</label><input id={`auth-${mode}-confirm`} name="confirmPassword" type={passwordType} autoComplete="new-password" minLength={10} maxLength={128} required /></div>}
+      {mode === "reset" && requiresMfa && <div className={styles.field}>
+        <label htmlFor="auth-reset-mfa">{t.mfaCodeLabel}</label>
+        <input id="auth-reset-mfa" name="mfaCode" type="text" inputMode="numeric"
+          autoComplete="one-time-code" pattern="[0-9]{6}" minLength={6} maxLength={6}
+          required placeholder="000000" />
+        <span className={styles.hint}>{t.mfaCodeHint}</span>
+      </div>}
       {mode === "sign-in" && <Link className={styles.forgot} href="/forgot-password">{t.forgotLink}</Link>}
       {statusMessage && <p role={state.status === "error" ? "alert" : "status"} className={`${styles.feedback} ${state.status === "error" ? styles.error : styles.success}`}>{statusMessage}</p>}
       {state.status !== "success" && <Submit label={buttonLabel} />}

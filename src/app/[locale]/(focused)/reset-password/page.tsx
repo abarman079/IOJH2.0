@@ -27,11 +27,23 @@ export default async function ResetPassword({ params }: { params: Promise<{ loca
   // A normal signed-in user is NOT automatically authorized to reset a password.
   const authorized = Boolean(ready && user?.updated_at &&
     await hasRecoveryProof(user.id, user.updated_at));
+  // The recovery email grants AAL1. An MFA-enabled user must supply the
+  // authenticator code in the *same* Server Action that updates the password.
+  let requiresMfa = false;
+  if (authorized && client) {
+    try {
+      const { data: assurance, error: assuranceError } =
+        await client.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (!assuranceError && assurance) {
+        requiresMfa = assurance.nextLevel === "aal2" && assurance.currentLevel !== "aal2";
+      }
+    } catch { /* The action independently checks AAL; fail closed. */ }
+  }
   const title = !ready ? t.resetDisabledTitle : authorized ? t.resetTitle : t.resetDeniedTitle;
   const intro = !ready ? t.resetDisabledIntro : authorized ? t.resetIntro : t.resetDeniedIntro;
 
   return <AuthShell locale={locale} title={title} intro={intro}>
-    {authorized ? <AuthForm locale={locale} mode="reset" /> :
+    {authorized ? <AuthForm locale={locale} mode="reset" requiresMfa={requiresMfa} /> :
       <div className={styles.messagePanel} role="status">
         <p>{!ready ? t.notConfigured : t.recoveryNeeded}</p>
         <Link href="/forgot-password">{t.requestNewRecovery}</Link>

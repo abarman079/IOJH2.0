@@ -9,7 +9,7 @@ import { clearRecoveryProof, hasRecoveryProof, isRecoveryReady } from "@/feature
 import { setResetNotice } from "@/features/auth/reset-notice-cookie";
 
 export type AuthErrorCode = "not_configured" | "validation" | "password_mismatch" |
-  "credentials" | "verify_required" | "unavailable" | "rate_limit" | "reset_required";
+  "credentials" | "verify_required" | "unavailable" | "rate_limit" | "reset_required" | "mfa_required" | "mfa_invalid";
 export type AuthSuccessCode = "check_email" | "reset_sent" | "password_changed";
 export type AuthState = { status: "idle" | "error" | "success"; code?: AuthErrorCode | AuthSuccessCode };
 
@@ -97,8 +97,43 @@ export async function changePasswordAction(_prev: AuthState, formData: FormData)
         !(await hasRecoveryProof(data.user.id, data.user.updated_at))) {
       return { status: "error", code: "reset_required" };
     }
+    // Supabase password changes require AAL2 when an Auth user has MFA.
+    // Complete TOTP *inside the same verified recovery action*; navigating to
+    // /admin/mfa can replace the Auth session and invalidate this recovery proof.
+    const { data: assurance, error: assuranceError } =
+      await client.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (assuranceError || !assurance) return { status: "error", code: "unavailable" };
+    if (assurance.nextLevel === "aal2" && assurance.currentLevel !== "aal2") {
+      const code = secretOf(formData, "mfaCode").trim();
+      if (!/^\d{6}$/.test(code)) return { status: "error", code: "mfa_required" };
+      const { data: factors, error: factorsError } = await client.auth.mfa.listFactors();
+      if (factorsError) return { status: "error", code: "unavailable" };
+      const factor = factors?.totp?.find((item) => item.status === "verified");
+      if (!factor) return { status: "error", code: "mfa_invalid" };
+      const { data: challenge, error: challengeError } =
+        await client.auth.mfa.challenge({ factorId: factor.id });
+      if (challengeError || !challenge) return { status: "error", code: "mfa_invalid" };
+      const { error: verifyError } = await client.auth.mfa.verify({
+        factorId: factor.id,
+        challengeId: challenge.id,
+        code,
+      });
+      if (verifyError) return providerError(verifyError, "mfa_invalid");
+
+      // Verify the elevated identity before changing credentials. MFA cannot
+      // grant recovery rights: the signed recovery proof was checked above.
+      const { data: verified, error: verifiedError } = await client.auth.getUser();
+      const { data: elevated, error: elevatedError } =
+        await client.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (verifiedError || !verified.user || verified.user.id !== data.user.id ||
+          elevatedError || elevated?.currentLevel !== "aal2") {
+        return { status: "error", code: "unavailable" };
+      }
+    }
     const { error } = await client.auth.updateUser({ password: parsed.data.password });
-    if (error) return providerError(error);
+    if (error) return error.code === "insufficient_aal"
+      ? { status: "error", code: "mfa_required" }
+      : providerError(error);
   } catch {
     // The caller cannot determine whether the provider applied an ambiguous
     // network failure. Do not claim success without a provider confirmation.
