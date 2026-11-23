@@ -2,7 +2,7 @@ import 'server-only';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { getPublicAuthConfig } from '@/features/auth/config';
-import { claimedJobSchema, probePayloadSchema, runnerOptionsSchema } from './contracts';
+import { claimedJobSchema, claimedJobBaseSchema, probePayloadSchema, runnerOptionsSchema } from './contracts';
 import type { ClaimedJob, RunnerOptions, LeaseIdentity, FailureCode, RecoverReason } from './contracts';
 import { validDeduplicationKey } from './policy.mjs';
 
@@ -53,7 +53,7 @@ export async function claimDueJobs(options: RunnerOptions): Promise<ClaimedJob[]
 }
 
 export async function completeLease(lease: LeaseIdentity): Promise<boolean> {
-  const identity = claimedJobSchema.pick({ jobId: true, leaseToken: true, leaseGeneration: true }).parse(lease);
+  const identity = claimedJobBaseSchema.pick({ jobId: true, leaseToken: true, leaseGeneration: true }).parse(lease);
   const { data, error } = await serviceClient().rpc('iojh_jobs_complete', {
     p_job: identity.jobId, p_token: identity.leaseToken, p_generation: identity.leaseGeneration,
   });
@@ -62,7 +62,7 @@ export async function completeLease(lease: LeaseIdentity): Promise<boolean> {
 }
 
 export async function renewLease(lease: LeaseIdentity, seconds = 60): Promise<string | null> {
-  const identity = claimedJobSchema.pick({ jobId: true, leaseToken: true, leaseGeneration: true }).parse(lease);
+  const identity = claimedJobBaseSchema.pick({ jobId: true, leaseToken: true, leaseGeneration: true }).parse(lease);
   if (!Number.isInteger(seconds) || seconds < 15 || seconds > 300) throw new TypeError('Invalid lease duration');
   const { data, error } = await serviceClient().rpc('iojh_jobs_renew', {
     p_job: identity.jobId, p_token: identity.leaseToken, p_generation: identity.leaseGeneration, p_seconds: seconds,
@@ -72,7 +72,7 @@ export async function renewLease(lease: LeaseIdentity, seconds = 60): Promise<st
 }
 
 export async function failLease(lease: LeaseIdentity, code: FailureCode, permanent = false): Promise<'stale' | 'retry' | 'dead'> {
-  const identity = claimedJobSchema.pick({ jobId: true, leaseToken: true, leaseGeneration: true }).parse(lease);
+  const identity = claimedJobBaseSchema.pick({ jobId: true, leaseToken: true, leaseGeneration: true }).parse(lease);
   if (!(['provider_unavailable', 'rate_limited', 'timeout', 'invalid_reference', 'handler_missing', 'internal_error'] as string[]).includes(code)) throw new TypeError('Unsupported error code');
   const { data, error } = await serviceClient().rpc('iojh_jobs_fail', {
     p_job: identity.jobId, p_token: identity.leaseToken, p_generation: identity.leaseGeneration,

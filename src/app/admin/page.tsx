@@ -13,6 +13,7 @@ export default async function AdminHome() {
       <p>This workspace is available only to the currently authorized IOJH website administrator after multi-factor verification.</p>
       <section className="admin-note"><h2>Foundation ready for editorial operations</h2>
         <p>Content, orders, Academy, publishing, and journal services are not yet administered here. Their workflows will be implemented in their approved development packets.</p></section>
+      <p><Link href="/admin/notifications" className="admin-text-link">Review notification failures</Link></p>
     </div>
   </main>;
 }
