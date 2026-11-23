@@ -96,6 +96,16 @@ def test_expired_lease_after_lock_wait(prefix: str, operation: str):
             result = future.result(timeout=10)
         expected = {'complete': False, 'renew': None, 'fail': 'stale'}[operation]
         assert result == expected, f'{operation} accepted an expired lease after a lock wait: {result!r}'
+        # Reclaim and finish this expired fixture before the next scenario.
+        replacement = claim('c07-cleanup-' + operation)
+        assert replacement is not None and replacement['jobId'] == str(job_id), (
+            f'{operation}: expired fixture was not reclaimed: {replacement!r}'
+        )
+        with db() as con:
+            assert con.execute(
+                'select public.iojh_jobs_complete(%s,%s,%s)',
+                (replacement['jobId'], replacement['leaseToken'], replacement['leaseGeneration'])
+            ).fetchone()[0] is True
         print(f'PASS: {operation} rejects a lease expired while waiting on a database lock')
     finally:
         blocker.rollback()

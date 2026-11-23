@@ -93,8 +93,8 @@
       "path": "tests/integration/c07a_concurrency.py",
       "change": "new",
       "purpose": "Independent PostgreSQL sessions test concurrent dedupe, SKIP LOCKED and fencing",
-      "sha256": "b5bd6b15c0ef7041ba9695fe550d17a8a9ec209b1f0336edd64057dd196df6cf",
-      "bytes": 8244
+      "sha256": "1d6f87d9488272212c5fa1b7d8a2b7b9a84ea58f548ac2b77b349003bb0c02a7",
+      "bytes": 8801
     },
     {
       "path": "docs/adr/C07a-queue-outbox.md",
