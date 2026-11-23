@@ -1,0 +1,155 @@
+{
+    "package":  "IOJH2_C07a_Durable_Jobs_Outbox_Integration.zip",
+    "project":  "IOJH 2.0 Web",
+    "branch":  "c07-durable-jobs-outbox-mail",
+    "baseline_sha":  "39c2013bb190fe27713869109db6daf75671cb13",
+    "stage":  "C07a",
+    "generated_on":  "2026-11-22",
+    "additive_database_migration":  "202611220001_c07a_jobs_outbox.sql",
+    "previous_migration_versions":  [
+                                        "202611110001",
+                                        "202611150001",
+                                        "202611180001",
+                                        "202611180002"
+                                    ],
+    "new_dependencies":  [
+
+                         ],
+    "optional_future_server_only_environment":  [
+                                                    "IOJH_JOBS_SERVICE_KEY"
+                                                ],
+    "deletions":  [
+
+                  ],
+    "renames":  [
+
+                ],
+    "files":  [
+                  {
+                      "path":  ".github/workflows/c05c-db-tests.yml",
+                      "change":  "modified",
+                      "purpose":  "Retain C05c/C06 tests; add C07a pgTAP and separate-session Linux concurrency",
+                      "sha256":  "0fcf392a7117aeb31fa9113f1a4c709bc4786baaa0a1f3b4da0e098ca711cb7d",
+                      "bytes":  1672
+                  },
+                  {
+                      "path":  "supabase/migrations/202611220001_c07a_jobs_outbox.sql",
+                      "change":  "new",
+                      "purpose":  "Versioned additive private queue, append-only outbox, fenced RPCs and grants",
+                      "sha256":  "dc0037f40b62e951d3fe34072566c1653e32d0a7e9261ac52b9516cc3d4e7c6a",
+                      "bytes":  20268
+                  },
+                  {
+                      "path":  "supabase/tests/c07a_jobs_security.sql",
+                      "change":  "new",
+                      "purpose":  "Disposable pgTAP authorization, atomicity, retry, replay, expiry and recovery assertions",
+                      "sha256":  "9b51039610404917905c8ec4e0fc11f4c5244d0333eeb74e84f6ac54e591b7d2",
+                      "bytes":  12357
+                  },
+                  {
+                      "path":  "supabase/verify/c07a_readonly_preflight.sql",
+                      "change":  "new",
+                      "purpose":  "Read-only owner project and prerequisites check before applying migration",
+                      "sha256":  "e0cb2759e4dca87928e06d62a8e214f549833489b6cc68fa0d1db9c8d0ca9bd9",
+                      "bytes":  1058
+                  },
+                  {
+                      "path":  "supabase/verify/c07a_readonly_postflight.sql",
+                      "change":  "new",
+                      "purpose":  "Read-only RLS/function privilege and migration ledger verification",
+                      "sha256":  "8d4fb6a2f965f162ffe19c3f1c2187eb0a77bdcf570b3ba6dcdcfcd6a05d5cc9",
+                      "bytes":  1846
+                  },
+                  {
+                      "path":  "src/lib/jobs/contracts.ts",
+                      "change":  "new",
+                      "purpose":  "Strong typed Zod probe and claim lease payload contracts",
+                      "sha256":  "008de70d5bd3f9917e47baae661a385d822218ae10b59781f580d34dda18d0bc",
+                      "bytes":  1850
+                  },
+                  {
+                      "path":  "src/lib/jobs/policy.mjs",
+                      "change":  "new",
+                      "purpose":  "Pure validated reference payload, dedupe and bounded retry helpers",
+                      "sha256":  "c42c2c2b04c1a1bf5dfc594db25a3254bd13561c5f1746fa0dfc6a0d3e0a7fa6",
+                      "bytes":  1679
+                  },
+                  {
+                      "path":  "src/lib/jobs/policy.d.mts",
+                      "change":  "new",
+                      "purpose":  "TypeScript declarations for pure job policy helpers",
+                      "sha256":  "812523f51c6d09bc75d4a389efe2e61c7c040055258cb656130a43228a0b34e0",
+                      "bytes":  645
+                  },
+                  {
+                      "path":  "src/lib/jobs/server.ts",
+                      "change":  "new",
+                      "purpose":  "Backend-only Supabase service-role RPC adapter for future C07b/C07c",
+                      "sha256":  "6a959f614cee87a4a48e0323d8c1c15a34110ec9c2133df04d85466c871fcd5e",
+                      "bytes":  5447
+                  },
+                  {
+                      "path":  "tests/unit/c07a-jobs.test.mjs",
+                      "change":  "new",
+                      "purpose":  "Built-in Node unit tests for job contracts and retry bounds",
+                      "sha256":  "3996b5a4b4fc3bb74968c84489ab062e8ae2627fa0207f78f4c944d2cdddaa27",
+                      "bytes":  2606
+                  },
+                  {
+                      "path":  "tests/integration/c07a_concurrency.py",
+                      "change":  "new",
+                      "purpose":  "Independent PostgreSQL sessions test concurrent dedupe, SKIP LOCKED and fencing",
+                      "sha256":  "1d6f87d9488272212c5fa1b7d8a2b7b9a84ea58f548ac2b77b349003bb0c02a7",
+                      "bytes":  8801
+                  },
+                  {
+                      "path":  "docs/adr/C07a-queue-outbox.md",
+                      "change":  "new",
+                      "purpose":  "Architectural rationale, concurrency and transaction boundaries, official sources",
+                      "sha256":  "08d7d7bb20cc201604bd672f286d953b4e6fef18f1a82846e638eb99f6f7d236",
+                      "bytes":  6157
+                  },
+                  {
+                      "path":  "docs/security/C07a-threat-review.md",
+                      "change":  "new",
+                      "purpose":  "Specific threats, mitigations and residual risks",
+                      "sha256":  "8593bd262925a6eca5cbda5317268f452620218db2d524626236675d2bd9be2f",
+                      "bytes":  3411
+                  },
+                  {
+                      "path":  "docs/acceptance/C07a.md",
+                      "change":  "new",
+                      "purpose":  "Owner acceptance checklist and stage boundaries",
+                      "sha256":  "6de0564afaead32d3c60dd487d2984bc724b88e40b6c16cc937723d558c215ab",
+                      "bytes":  2690
+                  },
+                  {
+                      "path":  "docs/setup/C07a-windows-supabase.md",
+                      "change":  "new",
+                      "purpose":  "PowerShell install, safe hosted SQL pre/postflight and CI procedure",
+                      "sha256":  "7570799a652b66ce4bd9a76cea102e6578fa198bfea19528034eae38f547f19e",
+                      "bytes":  8345
+                  },
+                  {
+                      "path":  "docs/verification/C07a-execution.md",
+                      "change":  "new",
+                      "purpose":  "Transparent executed/blocked test evidence and scope",
+                      "sha256":  "44e32127f54f48f67798a487ebc1bc107b15ab9889f51f490a94fecb04e285b8",
+                      "bytes":  4843
+                  },
+                  {
+                      "path":  "docs/manifest/C07a.json",
+                      "change":  "new",
+                      "purpose":  "Integration manifest; self-hash intentionally omitted"
+                  }
+              ],
+    "owner_actions":  "Review final PR HEAD and CI, accept documented browser/backup limitations, and explicitly approve merge. Do not enable C07b/C07c processing in C07a.",
+    "review_note_20261123":  "Lock-before-time fencing correction and three lock-wait expiry regressions were executed and passed in disposable PostgreSQL; hosted migration/security and ledger verified separately.",
+    "verified_on":  "2026-11-23",
+    "source_commit_tested":  "57ddf07a15238045f175491d931d09c115cf365b",
+    "database_migration_status":  "Applied once to verified IOJH Supabase; RLS and RPC postflight passed; all five local/remote migration versions match.",
+    "ci_evidence":  [
+                        "https://github.com/abarman079/IOJH2.0/actions/runs/45109339699",
+                        "https://github.com/abarman079/IOJH2.0/actions/runs/45123066512"
+                    ]
+}
