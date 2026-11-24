@@ -36,3 +36,22 @@ authorized isolated staging, rotation and shutdown verification.
 
 No WhiteCyber, DNS, business email or existing website changes
 are authorized by this test.
+
+
+## Verified pg_net privilege observation
+
+Disposable CI runs 45375046182 and 45375054477 observed
+SELECT table privileges on net.http_request_queue for anon,
+authenticated and service_role.
+
+This is a database privilege observation, not evidence of
+public Data API exposure.
+
+Do not activate hosted scheduling with a long-lived bearer
+credential until the credential boundary has been reviewed.
+
+Prefer short-lived signed requests with replay protection
+or another independently verified secure scheduler approach.
+
+Never queue Supabase service-role keys or Resend API keys
+as scheduler HTTP credentials.

@@ -60,3 +60,66 @@ local integration.
 
 The final Git manifest is calculated from canonical staged
 Git file contents rather than Windows working-copy line endings.
+
+
+## Hosted integration and disposable scheduler evidence
+
+Date: 2026-11-24
+
+Verified source commit:
+8b2e4afad6899668202088e070bd5faccbdaffa7
+
+- Fresh post-C07b database backup: PASS.
+- Backup size: 548091 bytes.
+- Backup SHA256:
+  E2CFEED755AB5ADF7EE1CEB67CE7277A167B4FAA0B5B679FD4CB40D436F493CE.
+- Archive inventory and extraction: PASS.
+- Independent database restoration: not tested.
+- Owner-authorized migration 202611240001: applied.
+- Hosted read-only database postflight: PASS.
+- RLS and backend RPC permission checks: PASS.
+- Local and remote migration ledger: 7/7 synchronized.
+- Authenticated administrator operations dashboard: verified.
+- Existing notification review page: verified.
+
+### Authenticated HTTP worker
+
+GitHub CI runs 45351725146 and 45351731483: SUCCESS.
+
+- Actual production Next.js server: PASS.
+- Unauthorized and invalid request denial: PASS.
+- Authenticated operational probe completion: PASS.
+- Duplicate execution prevention: PASS.
+- Disabled email attempt preservation: PASS.
+- Worker heartbeat and settlement: PASS.
+
+### Disposable PostgreSQL scheduler
+
+GitHub CI runs 45375046182 and 45375054477: SUCCESS.
+
+- PostgreSQL Cron, pg_net and Vault initialization: PASS.
+- One scheduler registered: PASS.
+- Five consecutive scheduled HTTP invocations: PASS.
+- One-minute cadence: PASS.
+- Scheduled probe completed exactly once: PASS.
+- Disabled notification retained its attempt budget: PASS.
+- Scheduler heartbeat: PASS.
+- Scheduler removal: PASS.
+
+The scheduler tests used isolated disposable infrastructure
+and temporary credentials only.
+
+### Remaining acceptance gates
+
+- Hosted scheduler credential security.
+- Authorized isolated HTTPS staging deployment.
+- Hosted scheduler reachability and execution proof.
+- Controlled real transactional email and delivery-event proof.
+- Final operational pause and rollback verification.
+- Final owner acceptance and pull request merge.
+
+No hosted Cron activation, real notification delivery,
+WhiteCyber changes or production DNS changes were performed.
+
+C07c remains an implementation candidate with successful
+disposable scheduler proof, not full production acceptance.
