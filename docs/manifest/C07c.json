@@ -52,8 +52,8 @@
     {
       "path": ".github/workflows/c05c-db-tests.yml",
       "change": "modified",
-      "sha256": "3123b8ad806795a2e9c88c0ef0c183e4b5f1ae376bf81d91929f620553acb222",
-      "bytes": 11377
+      "sha256": "ed74182f69faa806ba51a2592788e6768c52a67fb5f2d4aabc8b69543e89abb6",
+      "bytes": 21230
     },
     {
       "path": "docs/acceptance/C07c.md",
@@ -70,8 +70,8 @@
     {
       "path": "docs/security/C07c-threat-review.md",
       "change": "added",
-      "sha256": "c78a2a07a036f30fdee06864b924ceee7929aa39eed85cd695f99a9dbdb3fcf6",
-      "bytes": 3509
+      "sha256": "faccc943774e10482b40d5bfcb74eae7f02e345f3a991bf77087657395f61850",
+      "bytes": 4178
     },
     {
       "path": "docs/setup/C07c-staging-scheduler.md",

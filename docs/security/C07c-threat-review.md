@@ -17,3 +17,22 @@
 No irreversible remote changes. Migration updates only new metadata and inconsistent dead notices; no data deletion. Old provider IDs normally canonical UUID; new inputs normalized lowercase. No webhook activation by migration. Existing provider-event replay protection retained. Existing auth/MFA/CMS unchanged.
 
 Stop scheduler first in an incident; disable runner and send flags, leave valid webhook processing enabled if safe. Allow active leases to settle or expire; preserve all evidence. If credentials leaked rotate runner and provider credentials separately, then keep unresolved fingerprint-bound messages quarantined pending human reconciliation. Do not edit notification identifiers or purge queue. Never restore stale backup over newer obligations. Investigate uncertain sends using authorized provider dashboard before any new logical obligation. A compatible older code release can run with claims disabled; keep additive schema and all data. Forward-fix only after disposable CI.
+
+
+## Scheduler verification boundary
+
+The disposable GitHub CI scheduler test uses temporary credentials,
+local PostgreSQL extensions and a temporary Next.js application.
+
+It does not use hosted development or production credentials.
+
+Vault protects secrets at rest, but pg_net temporarily writes
+decrypted authorization headers into its request queue.
+Local extension privilege observations do not establish hosted
+Supabase security guarantees.
+
+Hosted activation requires a separate credential-access review,
+authorized isolated staging, rotation and shutdown verification.
+
+No WhiteCyber, DNS, business email or existing website changes
+are authorized by this test.
