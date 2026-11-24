@@ -51,12 +51,12 @@ export function NotificationReviewPanel(){
   finally{setLoadingOlder(false);}
  }
  async function retry(id:string){
-  if(!window.confirm('Requeue this reviewed obligation? No email will be sent until the approved C07c worker is available.'))return;
+  if(!window.confirm('Requeue this reviewed obligation? Delivery requires an enabled, eligible and authorized worker.'))return;
   setBusy(id);setError('');setMessage('');
   try{
    const response=await fetch('/api/admin/notifications/retry',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({notificationId:id,reason})});
    if(!response.ok)throw new Error('Retry rejected');
-   setMessage('Obligation requeued. No email has been sent.');await reload();
+   setMessage('Obligation requeued. Delivery is not confirmed.');await reload();
   }catch{setError('Requeue was not authorized or the obligation is no longer eligible. Refresh before retrying.');}
   finally{setBusy(null);}
  }
