@@ -94,15 +94,26 @@ Verified workflow steps:
 Run URL:
 https://github.com/abarman079/IOJH2.0/actions/runs/45159476471
 
-### Remaining owner acceptance
+## Hosted verification - 2026-11-24
 
-- Hosted Supabase C07b migration has NOT been applied.
-- Hosted preflight, backup and postflight remain pending.
-- Authenticated AAL2 administrator positive-path testing remains pending.
-- Full prior-phase browser regression remains pending.
-- Real Resend delivery and live provider webhooks were not tested.
-- No automatic worker or scheduler was enabled.
-- Draft PR review and final-head CI verification remain pending.
+- PR #3 CI run 45325870252: SUCCESS.
+- Verified commit: 80996288bf740259fe17df6248ca101fcf92e75a.
+- Hosted project: zxltczixfwczkmxcozyu.
+- Read-only database preflight: PASS.
+- Fresh database backup: 498456 bytes.
+- Backup SHA256: B998E9D0DE578FEF4AEC7E59BFF111ED485C73AFC9F88919241C1DB1FD563865.
+- Backup archive inventory and extraction: PASS.
+- Independent database restoration: not tested.
+- Migration 202611230001: applied successfully.
+- Six notification tables created with RLS enabled.
+- Anonymous and customer read permissions: denied.
+- Customer dispatch permission: denied.
+- Backend prepare permission: granted.
+- Administrator failure-list RPC permission: granted.
+- Notification records after migration: zero.
+- Supabase migration ledger: 6/6 synchronized.
+- Authenticated administrator dashboard and notification empty state: PASS.
+- Full Playwright regression: 75 passed, 3 skipped, zero failures.
 
-Do not classify C07b as production-accepted until these
-applicable acceptance requirements have been addressed.
+No live provider delivery was tested. C07c worker and scheduler
+remain deferred. Final owner approval and latest-head CI are required.
