@@ -1,0 +1,191 @@
+{
+  "project": "IOJH 2.0",
+  "packet": "C07b",
+  "baselineBranch": "main",
+  "baselineSha": "c923519e26f7e196c8b43bfc4a5a0462ec71d0e2",
+  "targetBranch": "c07b-notifications-email",
+  "migration": "202611230001_c07b_notifications.sql",
+  "added": 25,
+  "modified": 5,
+  "deleted": [],
+  "renamed": [],
+  "dependencyChanges": false,
+  "hostedDatabaseChanges": true,
+  "githubWrite": "Feature branch pushed; Draft PR #3 opened",
+  "files": [
+    {
+      "path": ".env.example",
+      "action": "modified",
+      "bytes": 1304,
+      "sha256": "91f477f0fb4fefc4af7e6dbc021d8da3a82734697534dc5f9e5d2521bf2bef1a"
+    },
+    {
+      "path": ".github/workflows/c05c-db-tests.yml",
+      "action": "modified",
+      "bytes": 1972,
+      "sha256": "8b822d46c53053fd48c30077e131c9d8857b81207c1322c0b9b6e2c1208e2f45"
+    },
+    {
+      "path": "docs/acceptance/C07b.md",
+      "action": "added",
+      "bytes": 3072,
+      "sha256": "83333077e6279a97868a279b1937e133cf7a174d9825936fc7dac6fb7fea74e6"
+    },
+    {
+      "path": "docs/adr/C07b-transactional-notifications.md",
+      "action": "added",
+      "bytes": 5687,
+      "sha256": "e77c8376b9e7fad83fb917116b9e5823b4909eb8633ddff807f24bdbbcd263ba"
+    },
+    {
+      "path": "docs/security/C07b-threat-review.md",
+      "action": "added",
+      "bytes": 3904,
+      "sha256": "8e10a98a47208747a05a1808c3aaa05381b9c85f8327fa7b74ef40c44ccc575c"
+    },
+    {
+      "path": "docs/setup/C07b-windows-supabase.md",
+      "action": "added",
+      "bytes": 11247,
+      "sha256": "a2ee2ef2c6860ddfda4275e2fa4f109bd6f4b01465ac96d4a9c3712cf4425a77"
+    },
+    {
+      "path": "docs/verification/C07b-execution.md",
+      "action": "added",
+      "bytes": 6102,
+      "sha256": "dc923015f3f4f80387cd328832c1ed8b28476251b6f945b6ba245854ef067f1e"
+    },
+    {
+      "path": "src/app/admin/notifications/page.tsx",
+      "action": "added",
+      "bytes": 1383,
+      "sha256": "0e19afeda58071cee668828eb4e2a06275d6baa4339ace28ba4449a8803d92c3"
+    },
+    {
+      "path": "src/app/admin/notifications/review.module.css",
+      "action": "added",
+      "bytes": 2144,
+      "sha256": "aa14cf19c58eb7078d47025fcec5940eba44f048cc9d37301bf637ca50eb5111"
+    },
+    {
+      "path": "src/app/admin/page.tsx",
+      "action": "modified",
+      "bytes": 1353,
+      "sha256": "c61d422e0ca09a0b248e52f9817be185ed648d537108b5af6b49ac99deb6a611"
+    },
+    {
+      "path": "src/app/api/admin/notifications/retry/route.ts",
+      "action": "added",
+      "bytes": 1893,
+      "sha256": "03c8f7ab26895ffa5f890bb13c8b4472ed35eec41c2bf721e879ab047b4d6361"
+    },
+    {
+      "path": "src/app/api/admin/notifications/route.ts",
+      "action": "added",
+      "bytes": 1588,
+      "sha256": "19a8cbc82244d35bb89fe870203fc3a032787a81bdb9419e17b0d80c238852a0"
+    },
+    {
+      "path": "src/app/api/notifications/resend-webhook/route.ts",
+      "action": "added",
+      "bytes": 1459,
+      "sha256": "c66a5766bbed4228b75895e51adefe4414c19e8b408009bcdfab5507fe1f313b"
+    },
+    {
+      "path": "src/features/notifications/notification-review-panel.tsx",
+      "action": "added",
+      "bytes": 6633,
+      "sha256": "098ad6b16ff2126599a36e8f07c76076de1c7107c20dcf1bd501fcad9e9faa47"
+    },
+    {
+      "path": "src/lib/jobs/contracts.ts",
+      "action": "modified",
+      "bytes": 2097,
+      "sha256": "5781ed419284e5718210d2fa06b3f13a3e5922fe4fcc084df3c2f8339b191008"
+    },
+    {
+      "path": "src/lib/jobs/server.ts",
+      "action": "modified",
+      "bytes": 5481,
+      "sha256": "1163b8490ee0e73fc5be51fbc0ae895847b87b1016746013a08318210b59d442"
+    },
+    {
+      "path": "src/lib/notifications/provider.d.mts",
+      "action": "added",
+      "bytes": 442,
+      "sha256": "8ccb73a12e775bb24faea9179578547fba68213ebacba888db2dfb4339e34510"
+    },
+    {
+      "path": "src/lib/notifications/provider.mjs",
+      "action": "added",
+      "bytes": 2147,
+      "sha256": "83e9affe614bbe7884e4ac52acf37dad57b21a8e8061565b4dcd5647eafe55c0"
+    },
+    {
+      "path": "src/lib/notifications/server.ts",
+      "action": "added",
+      "bytes": 4892,
+      "sha256": "e71a0e4a17d1f4d87919bd85cab5b61b6d653e90a9997a326505a22925a958d7"
+    },
+    {
+      "path": "src/lib/notifications/templates.d.mts",
+      "action": "added",
+      "bytes": 629,
+      "sha256": "512ff2bcb0dc1e7307b9c4f6ad404d2aec32e2daa9226c65747cc524752a693c"
+    },
+    {
+      "path": "src/lib/notifications/templates.mjs",
+      "action": "added",
+      "bytes": 3807,
+      "sha256": "5f3b49719a235e5d15f9612346d0ce5e39c6c855463b11bfd6a77203c34bb2c2"
+    },
+    {
+      "path": "src/lib/notifications/webhook.d.mts",
+      "action": "added",
+      "bytes": 309,
+      "sha256": "d5c395646cff59255806396f0060b4f78a81278420fd2934dce682cdb3fd411a"
+    },
+    {
+      "path": "src/lib/notifications/webhook.mjs",
+      "action": "added",
+      "bytes": 1430,
+      "sha256": "fc9f3d4b02d343707d71379395ad4d3e3e841df2cdfc8e30df072c176faba2bd"
+    },
+    {
+      "path": "supabase/migrations/202611230001_c07b_notifications.sql",
+      "action": "added",
+      "bytes": 27131,
+      "sha256": "af8eb5335df0ef3f5976d36f7e01a640cf5b6ce20a58524f06d882fe72b44914"
+    },
+    {
+      "path": "supabase/tests/c07b_notifications_security.sql",
+      "action": "added",
+      "bytes": 11389,
+      "sha256": "b27f1b95041a39a7dda96be93816e4a1f9bbc3d729ba0cc2bc8000ec452b1323"
+    },
+    {
+      "path": "supabase/verify/c07b_readonly_postflight.sql",
+      "action": "added",
+      "bytes": 1113,
+      "sha256": "f860dec07e3cc09464a92b2e16f84c9088c645f01ab32c78e0a403b32929929b"
+    },
+    {
+      "path": "supabase/verify/c07b_readonly_preflight.sql",
+      "action": "added",
+      "bytes": 695,
+      "sha256": "86074c9ee5a83696eb89e409e808b9d3088a7cbed4f5dc4bf4ef65f44f3b1f06"
+    },
+    {
+      "path": "tests/e2e/c07b-notifications.spec.ts",
+      "action": "added",
+      "bytes": 1463,
+      "sha256": "d3b937139084b9ffc8b8fbd07f6cc08db298915074a0aa274e5f9c583e36e30b"
+    },
+    {
+      "path": "tests/unit/c07b-notifications.test.mjs",
+      "action": "added",
+      "bytes": 4313,
+      "sha256": "1aff0f82d6c4aaf1e46ad33e2d5edf19d63817410826dd5dbc78a4c41257adaf"
+    }
+  ]
+}

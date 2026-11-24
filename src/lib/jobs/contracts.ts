@@ -4,19 +4,16 @@ import { validDeduplicationKey, validWorkerId } from './policy.mjs';
 export const probePayloadSchema = z.object({ correlationId: z.uuid() }).strict();
 export type ProbePayload = z.infer<typeof probePayloadSchema>;
 
-/** Reserved reference-only C07b notification schema; NOT an enabled job type. */
+/** C07b reference-only notification job payload; no email bodies or addresses. */
 export const notificationReferenceSchema = z.object({
   notificationId: z.uuid(), locale: z.enum(['en','bn']),
   templateVersion: z.number().int().min(1).max(1000),
 }).strict();
 export type NotificationReference = z.infer<typeof notificationReferenceSchema>;
 
-export const claimedJobSchema = z.object({
+export const claimedJobBaseSchema = z.object({
   jobId: z.uuid(),
   eventId: z.uuid(),
-  kind: z.literal('ops.probe'),
-  payloadVersion: z.literal(1),
-  payload: probePayloadSchema,
   dedupeKey: z.string().refine(validDeduplicationKey),
   attempt: z.number().int().min(1).max(10),
   maxAttempts: z.number().int().min(1).max(10),
@@ -25,6 +22,10 @@ export const claimedJobSchema = z.object({
   leaseToken: z.uuid(),
   leaseExpiresAt: z.iso.datetime({ offset: true }),
 }).strict();
+export const claimedJobSchema = z.discriminatedUnion('kind', [
+  claimedJobBaseSchema.extend({kind:z.literal('ops.probe'),payloadVersion:z.literal(1),payload:probePayloadSchema}).strict(),
+  claimedJobBaseSchema.extend({kind:z.literal('notification.email'),payloadVersion:z.literal(1),payload:notificationReferenceSchema}).strict(),
+]);
 export type ClaimedJob = z.infer<typeof claimedJobSchema>;
 
 export const runnerOptionsSchema = z.object({

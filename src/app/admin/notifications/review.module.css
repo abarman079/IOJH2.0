@@ -1,0 +1,22 @@
+.panel{margin:34px 0 70px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:clamp(18px,3vw,30px);color:var(--ink)}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+.header h2{font:500 clamp(23px,2.5vw,31px)/1.25 var(--font-editorial);margin:0}
+.muted{color:var(--ink-muted);font-size:14px;line-height:1.7}
+.state{display:inline-flex;padding:4px 9px;border-radius:6px;border:1px solid var(--control-border);font-weight:650;font-size:12px;letter-spacing:.01em}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.button{min-height:44px;padding:9px 15px;background:var(--brand);color:var(--brand-on);border:1px solid var(--brand);border-radius:8px;font-weight:700;font-size:14px;cursor:pointer}
+.button:disabled{cursor:not-allowed;opacity:.55}
+.secondaryButton{min-height:44px;padding:9px 15px;border:1px solid var(--control-border);border-radius:8px;color:var(--ink);background:var(--surface-soft);font-weight:650;cursor:pointer}
+.tableScroll{overflow-x:auto;max-width:100%}
+.table{border-collapse:collapse;width:100%;min-width:660px;text-align:left}
+.table th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);font-weight:700}
+.table th,.table td{padding:15px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.table td{font-size:14px}
+.table td code{font-size:12px;word-break:break-all}
+.form{display:flex;flex-wrap:wrap;align-items:end;gap:9px}
+.select{background:var(--surface);color:var(--ink);border:1px solid var(--control-border);padding:10px;border-radius:8px;min-height:44px;min-width:155px}
+.error{border-left:3px solid #b42318;padding:10px 15px;background:var(--surface-soft)}
+.success{border-left:3px solid var(--brand);padding:10px 15px;background:var(--surface-soft)}
+.button:focus-visible,.secondaryButton:focus-visible,.select:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+@media(max-width:650px){.panel{padding:18px}.table{min-width:620px}.header{align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){.button,.secondaryButton{transition:none}}
