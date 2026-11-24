@@ -69,3 +69,247 @@ jobs:
         env:
           IOJH_TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
         run: python tests/integration/c07c_concurrency.py
+
+runner-http:
+    name: C07c authenticated HTTP worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install frozen application dependencies
+        run: |
+          corepack enable
+          corepack pnpm install --frozen-lockfile
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.1
+
+      - name: Start isolated Supabase stack
+        run: |
+          supabase start > "$RUNNER_TEMP/c07c-start.log" 2>&1
+          supabase status -o json > "$RUNNER_TEMP/c07c-status.json"
+
+      - name: Install PostgreSQL integration client
+        run: python -m pip install 'psycopg[binary]==3.2.10'
+
+      - name: Verify authenticated worker and disabled email isolation
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import secrets
+          import signal
+          import subprocess
+          import time
+          import uuid
+          import urllib.request
+          import urllib.error
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import psycopg
+
+          config = json.loads(
+              Path(os.environ["RUNNER_TEMP"],
+                   "c07c-status.json").read_text()
+          )
+
+          api = config["API_URL"]
+          dsn = config["DB_URL"]
+
+          assert api == "http://127.0.0.1:54321"
+          db_url = urlparse(dsn)
+          assert db_url.hostname == "127.0.0.1"
+          assert db_url.port == 54322
+          assert db_url.path == "/postgres"
+
+          public_key = config.get("ANON_KEY") or config.get("PUBLISHABLE_KEY")
+          service_key = config.get("SERVICE_ROLE_KEY") or config.get("SECRET_KEY")
+
+          assert public_key and service_key
+          assert public_key != service_key
+
+          runner_secret = secrets.token_hex(32)
+
+          env = dict(os.environ)
+          env.update({
+              "NEXT_PUBLIC_SITE_URL": "http://127.0.0.1:3000",
+              "NEXT_PUBLIC_SUPABASE_URL": api,
+              "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": public_key,
+              "IOJH_JOBS_SERVICE_KEY": service_key,
+              "IOJH_JOBS_RUNNER_ENABLED": "true",
+              "IOJH_JOBS_RUNNER_SECRET": runner_secret,
+              "IOJH_NOTIFICATIONS_SEND_ENABLED": "false",
+              "IOJH_NOTIFICATIONS_WEBHOOK_ENABLED": "false",
+              "IOJH_NOTIFICATIONS_RESEND_API_KEY": "",
+              "IOJH_NOTIFICATIONS_FROM": "",
+              "IOJH_NOTIFICATIONS_STAGING_RECIPIENT": "",
+              "IOJH_NOTIFICATIONS_STAGING_NOTIFICATION_ID": "",
+              "IOJH_NOTIFICATIONS_STAGING_ORIGIN": ""
+          })
+
+          def query(sql, params=()):
+              with psycopg.connect(dsn, connect_timeout=5) as conn:
+                  return conn.execute(sql, params).fetchone()
+
+          opener = urllib.request.build_opener(
+              urllib.request.ProxyHandler({})
+          )
+
+          def request(method="POST", token=None, body=b"{}"):
+              headers = {"Content-Type": "application/json"}
+
+              if token is not None:
+                  headers["Authorization"] = "Bearer " + token
+
+              req = urllib.request.Request(
+                  "http://127.0.0.1:3000/api/internal/jobs/run",
+                  data=body if method == "POST" else None,
+                  headers=headers,
+                  method=method
+              )
+
+              try:
+                  response = opener.open(req, timeout=45)
+              except urllib.error.HTTPError as error:
+                  response = error
+
+              with response:
+                  return (
+                      response.status,
+                      json.loads(response.read()),
+                      response.headers
+                  )
+
+          subprocess.run(
+              ["corepack", "pnpm", "build"],
+              env=env, check=True
+          )
+
+          log_path = Path(os.environ["RUNNER_TEMP"], "c07c-next.log")
+
+          with log_path.open("w") as log:
+              server = subprocess.Popen(
+                  ["corepack", "pnpm", "start",
+                   "--hostname", "127.0.0.1"],
+                  env=env,
+                  stdout=log,
+                  stderr=subprocess.STDOUT,
+                  start_new_session=True
+              )
+
+              try:
+                  for _ in range(60):
+                      if server.poll() is not None:
+                          raise RuntimeError("Application stopped unexpectedly")
+
+                      try:
+                          if request(method="GET")[0] == 405:
+                              break
+                      except (OSError, urllib.error.URLError):
+                          pass
+
+                      time.sleep(1)
+                  else:
+                      raise RuntimeError("Application readiness failed")
+
+                  print("PASS: Production application started")
+
+                  assert request()[0] == 401
+                  assert request(token="0" * 64)[0] == 401
+                  assert request(token=runner_secret,
+                                 body=b'{"limit":100}')[0] == 400
+                  assert request(token=runner_secret,
+                                 body=b"x" * 65)[0] == 400
+
+                  assert query(
+                      "select last_started from private.runner_state"
+                  )[0] is None
+
+                  print("PASS: Unauthorized and invalid requests denied")
+
+                  job_id = query(
+                      "select public.iojh_jobs_enqueue_probe(%s,%s,null,3)",
+                      (uuid.uuid4(), "c07c-http-" + uuid.uuid4().hex)
+                  )[0]
+
+                  notice_id = query(
+                      "select public.iojh_notifications_enqueue_fixture(%s,%s,'en')",
+                      ("C07C-HTTP-TEST", "c07c-mail-" + uuid.uuid4().hex)
+                  )[0]
+
+                  assert query(
+                      "select state, attempts from private.jobs where id=%s",
+                      (job_id,)
+                  ) == ("pending", 0)
+
+                  status, result, headers = request(token=runner_secret)
+
+                  assert status == 200
+                  assert result["ok"] is True
+                  assert result["busy"] is False
+                  assert result["summary"]["claimed"] == 1
+                  assert result["summary"]["completed"] == 1
+                  assert result["summary"]["submitted"] == 0
+                  assert "no-store" in headers["Cache-Control"]
+                  assert runner_secret not in json.dumps(result)
+
+                  print("PASS: Authenticated HTTP worker completed probe")
+
+                  assert query(
+                      """select state, attempts, total_attempts
+                         from private.jobs where id=%s""",
+                      (job_id,)
+                  ) == ("succeeded", 1, 1)
+
+                  assert query(
+                      """select count(*) from private.job_attempts
+                         where job_id=%s and outcome='succeeded'""",
+                      (job_id,)
+                  )[0] == 1
+
+                  status, result, _ = request(token=runner_secret)
+
+                  assert status == 200
+                  assert result["summary"]["claimed"] == 0
+
+                  assert query(
+                      "select total_attempts from private.jobs where id=%s",
+                      (job_id,)
+                  )[0] == 1
+
+                  print("PASS: Repeated execution did not duplicate probe")
+
+                  assert query(
+                      """select j.state,j.attempts,n.status
+                         from private.notification_records n
+                         join private.jobs j on j.id=n.job_id
+                         where n.id=%s""",
+                      (notice_id,)
+                  ) == ("pending", 0, "queued")
+
+                  print("PASS: Disabled email retained its attempt budget")
+
+                  assert query(
+                      """select last_success is not null,
+                                last_finished is not null,
+                                run_token is null
+                         from private.runner_state"""
+                  ) == (True, True, True)
+
+                  print("PASS: Worker heartbeat and settlement verified")
+                  print("SUCCESS: C07c authenticated HTTP integration passed")
+
+              finally:
+                  if server.poll() is None:
+                      os.killpg(server.pid, signal.SIGTERM)
+                      server.wait(timeout=15)
+          PY
