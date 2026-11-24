@@ -13,7 +13,7 @@ This artifact-build environment has Node 22.16 and global TypeScript parser but 
 - `yaml.safe_load` on the amended GitHub workflow: passed (job `database-security`).
 - `corepack pnpm --version && corepack pnpm lint`: **attempted and blocked**, because registry.npmjs.org cannot resolve (`EAI_AGAIN`, pnpm@10.21.0 unavailable); no ESLint run occurred.
 
-### Not executed / pending
+### Not executed in the original artifact environment (historical)
 
 - `corepack pnpm typecheck`, `corepack pnpm build`, full Playwright (no installed pnpm project dependencies).
 - C07b pgTAP, existing C05c/C06/C07a DB tests, and C07a independent-session concurrency in a disposable PostgreSQL environment (no PostgreSQL/Supabase available here).
@@ -44,3 +44,65 @@ Run the existing complete browser suite separately, preferably against a clean p
 - **Resend live delivery / bounce / complaint:** *not authorized and not performed*; requires verified sender, private key, webhook registration and staging approval.
 - **Hosted migration:** *not authorized and not applied*; no schema modification has been made.
 - **GitHub feature branch / Draft PR:** attempted branch creation through the connector returned 403. User's local Git checkout is the safe alternative.
+
+
+## Owner integration verification - 2026-11-23
+
+The following results supersede the original artifact environment's
+pending checks. These tests were run against the owner's actual Windows
+repository checkout after C07b was integrated.
+
+### Windows application checks
+
+- Dependency installation with frozen lockfile: PASS.
+- ESLint: PASS.
+- TypeScript semantic typecheck: PASS.
+- Node unit tests: 48/48 PASS.
+- Next.js production build: PASS.
+- C07b Playwright browser tests: 8/8 PASS.
+- New admin notification routes compiled successfully.
+
+Two source corrections were required during integration:
+
+1. src/lib/notifications/server.ts:
+   Narrow the prepared action to send before using send-only fields.
+
+2. src/features/notifications/notification-review-panel.tsx:
+   Correct the initial asynchronous fetch to satisfy React effect rules.
+
+These changes were included in commit:
+01f1f826544a51d1ccac608e2ef0511a25af01f2
+
+### Disposable GitHub database CI
+
+Repository: abarman079/IOJH2.0
+Branch: c07b-notifications-email
+Commit: 01f1f826544a51d1ccac608e2ef0511a25af01f2
+
+GitHub Actions run: 45159476471
+Conclusion: SUCCESS
+
+Verified workflow steps:
+
+- Disposable Supabase PostgreSQL startup and migrations: PASS.
+- C05c database security tests: PASS.
+- C06 CMS and Storage security tests: PASS.
+- C07a queue/outbox security tests: PASS.
+- C07b notification security tests: PASS.
+- C07a independent-session concurrency tests: PASS.
+
+Run URL:
+https://github.com/abarman079/IOJH2.0/actions/runs/45159476471
+
+### Remaining owner acceptance
+
+- Hosted Supabase C07b migration has NOT been applied.
+- Hosted preflight, backup and postflight remain pending.
+- Authenticated AAL2 administrator positive-path testing remains pending.
+- Full prior-phase browser regression remains pending.
+- Real Resend delivery and live provider webhooks were not tested.
+- No automatic worker or scheduler was enabled.
+- Draft PR review and final-head CI verification remain pending.
+
+Do not classify C07b as production-accepted until these
+applicable acceptance requirements have been addressed.
