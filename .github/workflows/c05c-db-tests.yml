@@ -70,7 +70,7 @@ jobs:
           IOJH_TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
         run: python tests/integration/c07c_concurrency.py
 
-runner-http:
+  runner-http:
     name: C07c authenticated HTTP worker
     runs-on: ubuntu-latest
     timeout-minutes: 35
