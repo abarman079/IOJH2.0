@@ -76,3 +76,41 @@ Actual hosting runtime, scheduler persistence, TLS, credential
 storage, log redaction and rotation remain mandatory before
 hosted activation. This does not resolve the pg_net privilege
 finding for the Supabase Cron alternative.
+
+## Controlled provider integration security evidence
+
+Verified on 2026-11-25.
+
+The temporary staging ingress accepted only the exact webhook
+POST route. Signature, timestamp, body-size, sender, recipient,
+subject and provider message ID were checked before forwarding.
+
+Unrelated signed events were discarded without local payload
+logging or database forwarding. A matching early delivery
+event was deferred until its provider message ID was recorded.
+
+The webhook creation form had no visible domain filter.
+Temporary account-wide event transit through Cloudflare was
+explicitly authorized by the owner. Only email.delivered
+was subscribed. Zero unrelated events were stored locally.
+
+Exactly one authorized notification was accepted and delivered.
+One signed delivery event was reconciled. No retry was needed.
+
+The sending-enabled process was stopped after one invocation.
+Persistent sending, runner and webhook configuration remained
+disabled and provider secrets were absent.
+
+Subsequent dashboard screenshots confirmed deletion of the
+temporary webhook and revocation of the dedicated staging
+API key after exactly one use. Existing authentication and
+book reporting credentials remained listed.
+
+The temporary ingress is not a production component.
+Permanent webhook isolation, scheduler credentials, hosting
+log redaction, rate limits and operational rollback remain
+mandatory before production activation.
+
+One successful real delivery does not establish outage behavior,
+duplicate-send protection under all conditions or production
+capacity.

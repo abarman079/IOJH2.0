@@ -182,3 +182,70 @@ system Cron or actual hosted scheduler acceptance.
 Hosted HTTPS deployment, production scheduler selection,
 controlled real provider delivery, delivery-event verification
 and final operational acceptance remain outstanding.
+
+## Controlled real transactional delivery - 2026-11-25
+
+Owner-authorized single-email integration test using an isolated
+local Supabase environment and temporary restricted HTTPS ingress.
+
+### Provider and HTTPS verification
+
+- Dedicated updates.iojh.com.bd sending domain verified.
+- Existing website A and mail MX records preserved.
+- Free-plan quota reviewed before delivery.
+- Domain-restricted sending-only API key verified.
+- Cloudflared 2026.11.2 executable checksum verified.
+- Temporary hostname resolution failure recovered through
+  public DNS readiness checks before Windows DNS resolution.
+- Temporary HTTPS connectivity and origin identity verified.
+- Production Next.js build with temporary HTTPS origin passed.
+- Public homepage, administrator and worker access blocked.
+- Signature, timestamp, request-size and event filtering
+  self-tests passed.
+- Exact sender, recipient, subject and provider-ID filtering.
+- Temporary webhook subscribed to email.delivered only.
+
+### Real delivery evidence
+
+- Exactly one authorized notification enqueued.
+- Exactly one authenticated worker invocation.
+- Worker HTTP status: 200.
+- Claimed: 1; submitted: 1.
+- Retry, dead, review, stale and error counters: 0.
+- Resend provider acceptance ID recorded.
+- Resend dashboard confirmed Delivered.
+- Gmail inbox receipt confirmed by owner screenshot.
+- Final notification status: delivered.
+- Final job state: succeeded.
+- Total job attempts: 1.
+- Accepted delivery attempts: 1.
+- Signed delivery events: 1.
+- Unrelated provider events stored: 0.
+- Active pending or leased jobs: 0.
+- Last error: null.
+
+### Verified cleanup
+
+- Sending-enabled application stopped after one invocation.
+- Webhook-only application reconciled the signed event.
+- Temporary application and ingress ports closed.
+- Temporary Cloudflared process stopped.
+- Persistent runner, sending and webhook flags disabled.
+- Persistent provider credentials absent.
+- Initial terminal webhook removal confirmation was not an
+  independent provider-side deletion check.
+- Subsequent owner dashboard screenshots verified that the
+  temporary webhook was deleted and no webhooks remained.
+- Temporary restricted API key usage verified as exactly once.
+- Temporary restricted API key revoked and absence verified
+  through the subsequent API keys dashboard screenshot.
+- Existing Supabase Auth and Book Leads Reporting credentials
+  remained listed.
+- No additional real email was sent.
+
+Private recipient, individual message identifiers, temporary
+hostname and credentials are omitted from public evidence.
+
+The controlled local end-to-end integration passed.
+Permanent hosted scheduler, production webhook isolation,
+hosting capacity and operational rollback remain outstanding.
