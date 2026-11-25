@@ -123,3 +123,62 @@ WhiteCyber changes or production DNS changes were performed.
 
 C07c remains an implementation candidate with successful
 disposable scheduler proof, not full production acceptance.
+
+
+## Secure local staging and independent scheduler evidence
+
+Date: 2026-11-25
+
+Verified source:
+7f8ef417cc5c6957e69947c909e4398835467e1d
+
+### Local infrastructure
+
+- Docker Engine 29.9.3 with WSL 2: PASS.
+- Separate source archive and staging workspace: PASS.
+- Independent local Supabase configuration: PASS.
+- PostgreSQL 17.11: verified.
+- All seven database migrations: PASS.
+- Docker IPv4 and IPv6 localhost bindings: PASS.
+- Windows listener isolation for ports 54321-54324: PASS.
+- Hosted credentials excluded from staging: PASS.
+- Original development repository preserved.
+
+Realtime failed an initial health check and was excluded
+from the disposable staging stack. Edge Runtime and analytics
+services were also excluded. These are staging-only changes.
+
+Docker Desktop port binding behavior was changed to local only.
+The first unsafe staging deployment was stopped before reuse.
+
+### Production application smoke tests
+
+- Frozen dependencies and Next.js production build: PASS.
+- Local Supabase Auth API: PASS.
+- Local homepage: PASS.
+- Worker GET returned HTTP 405: PASS.
+- Disabled worker POST returned HTTP 503: PASS.
+- Empty queue and notification records before runner test: PASS.
+
+### Independent scheduler verification
+
+A temporary Node.js scheduler invoked the local production
+Next.js worker five times without PostgreSQL pg_net.
+
+- Missing and invalid credentials rejected: PASS.
+- Five authenticated HTTP invocations: PASS.
+- Four observed scheduling intervals: 60.0 seconds each.
+- One synthetic operational probe completed exactly once.
+- Total job attempts: 1.
+- Duplicate processing: none.
+- Real emails submitted: 0.
+- Worker heartbeat: PASS.
+- Application shutdown: PASS.
+- Persistent disabled environment configuration preserved.
+
+This is local integration evidence, not persistent operating
+system Cron or actual hosted scheduler acceptance.
+
+Hosted HTTPS deployment, production scheduler selection,
+controlled real provider delivery, delivery-event verification
+and final operational acceptance remain outstanding.

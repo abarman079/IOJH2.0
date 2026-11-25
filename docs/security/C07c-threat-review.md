@@ -55,3 +55,24 @@ or another independently verified secure scheduler approach.
 
 Never queue Supabase service-role keys or Resend API keys
 as scheduler HTTP credentials.
+
+
+## Independent scheduler security alternative
+
+Verified on 2026-11-25 using isolated local staging.
+
+The temporary Node.js scheduler held its dedicated bearer
+credential outside PostgreSQL. No pg_net request queue was
+used for this test.
+
+Five authenticated invocations passed at one-minute cadence.
+The synthetic probe completed exactly once. Email and webhook
+execution remained disabled.
+
+An independent scheduler is a viable implementation alternative
+to storing reusable bearer headers in pg_net.
+
+Actual hosting runtime, scheduler persistence, TLS, credential
+storage, log redaction and rotation remain mandatory before
+hosted activation. This does not resolve the pg_net privilege
+finding for the Supabase Cron alternative.
