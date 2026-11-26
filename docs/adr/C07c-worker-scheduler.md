@@ -24,3 +24,35 @@ Protected `/admin/operations` uses fresh C05 guard and user-scoped AAL2 aggregat
 Prefer existing Supabase Cron for authorized staging if available; cPanel cron is fallback if verified. Vercel Hobby cron is not minute-level, and its noncommercial terms make it inappropriate for an institutional business by default. No paid dependency introduced. Official references checked: https://supabase.com/docs/guides/cron ; https://supabase.com/docs/guides/cron/quickstart ; https://supabase.com/docs/guides/database/extensions/pg_net ; https://supabase.com/docs/guides/database/vault ; https://docs.cpanel.net/cpanel/advanced/cron-jobs/ ; https://resend.com/changelog/idempotency-keys ; https://resend.com/pricing ; https://resend.com/changelog/api-rate-limit ; https://vercel.com/docs/cron-jobs/usage-and-pricing . Free limits can change; verify actual dashboard quota and extensions before activation.
 
 Next.js route runtime and host-configurable maxDuration: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config ; Supabase request abort support: https://supabase.com/docs/reference/javascript/using-modifiers-abortsignal . Actual host enforcement still VERIFY.
+
+## Development acceptance and operational deferral
+
+Decision date: 2026-11-26.
+
+The owner accepts C07c for development integration
+following successful disposable database and scheduler
+tests, independent local scheduler proof, controlled
+real transactional email delivery, signed delivery
+event reconciliation and verified cleanup.
+
+Final permanent scheduler selection remains deferred.
+
+Supabase Cron with pg_net requires an unresolved
+credential-access security review. Independent
+scheduling demonstrated a viable local alternative,
+but persistent hosting execution is not yet verified.
+
+WhiteCyber remains a candidate only after isolated
+runtime, resource and operational acceptance tests.
+No hosting purchase or production cutover is authorized.
+
+Temporary Cloudflare Quick Tunnels are not approved
+as permanent production infrastructure.
+
+Under V5 sections 15.2 and 22.8, unaffected local
+development may continue while hosting is blocked.
+Scheduler-dependent functionality must remain disabled
+until its operational prerequisites pass.
+
+C08 development integration does not waive any
+production security, reliability or rollback gate.

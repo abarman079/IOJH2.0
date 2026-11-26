@@ -114,3 +114,36 @@ mandatory before production activation.
 One successful real delivery does not establish outage behavior,
 duplicate-send protection under all conditions or production
 capacity.
+
+## Owner-approved operational deferral - 2026-11-26
+
+Development integration is accepted. Production
+operational acceptance remains deferred.
+
+The pg_net authorization-header privilege finding is
+not resolved by the independent local scheduler proof.
+No hosted pg_net bearer scheduling is authorized.
+
+The successful temporary webhook proxy demonstrated
+a controlled staging boundary, not a permanent
+production webhook architecture.
+
+Required before production activation:
+- Verified host capacity and runtime.
+- Secure persistent scheduler and credential lifecycle.
+- Permanent webhook event isolation.
+- Appropriate rate limits and log redaction.
+- Monitoring, shutdown and compatible rollback proof.
+
+Keep runner, notification sending and webhook flags
+disabled in persistent deployment environments.
+
+Do not reuse the revoked staging provider credential.
+Do not restore the deleted temporary webhook.
+
+Preserve durable jobs, notification records,
+migration history and existing business services.
+
+C08 may proceed only within unaffected development
+scope. Unverified scheduler-dependent operations
+remain disabled.

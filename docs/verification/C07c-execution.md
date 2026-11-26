@@ -249,3 +249,43 @@ hostname and credentials are omitted from public evidence.
 The controlled local end-to-end integration passed.
 Permanent hosted scheduler, production webhook isolation,
 hosting capacity and operational rollback remain outstanding.
+
+## Final reviewed-head CI and owner decision - 2026-11-26
+
+Reviewed commit:
+dc4d4aab2f30b13a3f6a5d01de181a2f8b3b1710.
+
+GitHub PR run 45589259684: SUCCESS.
+
+Database security job 139118792920:
+- C05c through C07c PostgreSQL security suites passed.
+- Independent-session concurrency tests passed.
+- Lease expiry and stale settlement fencing passed.
+- Concurrent provider settlement and webhook convergence passed.
+
+Authenticated HTTP worker job 139118792545:
+- Production application startup passed.
+- Unauthorized and invalid requests rejected.
+- Authenticated operational probe passed.
+- Duplicate probe execution prevented.
+- Disabled notification attempt budget preserved.
+- Worker heartbeat and settlement verified.
+- Five disposable scheduler invocations passed.
+- One-minute cadence verified.
+- Disposable scheduler removed.
+
+CI warnings:
+- Older actions targeting Node.js 20 executed using Node.js 24.
+- Dependency deprecation notices for punycode and INBUCKET_URL.
+- Both jobs succeeded despite these warnings.
+- Dependency modernization remains separate maintenance work.
+
+Owner approved development integration and formal
+deferral of hosting-dependent operational acceptance.
+
+Permanent hosting, scheduler, webhook and operational
+rollback gates remain outstanding. No additional
+infrastructure activation is authorized.
+
+Final documentation-head CI and merge verification
+remain pending at the time of this entry.

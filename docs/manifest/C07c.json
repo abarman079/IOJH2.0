@@ -58,20 +58,20 @@
     {
       "path": "docs/acceptance/C07c.md",
       "change": "added",
-      "sha256": "aeb3c83278d0ac776e7d8440cdcf327e6ca044af79685c510eb69a4523cc8ebe",
-      "bytes": 5777
+      "sha256": "c201fd55cd689feb5ceb565ba149b78cc497941ecddcc465df2399ebc3bf4ed7",
+      "bytes": 7611
     },
     {
       "path": "docs/adr/C07c-worker-scheduler.md",
       "change": "added",
-      "sha256": "efc395f540422235adddd34c85c4c1d8481f5de2e1b700f99b061123fd5886c6",
-      "bytes": 6450
+      "sha256": "33a637a15c168ac695589ebfc58ae739a4f1b38f3014288e3c4e31271fbc9540",
+      "bytes": 7594
     },
     {
       "path": "docs/security/C07c-threat-review.md",
       "change": "added",
-      "sha256": "8061fe9cf982e6aaf816607cefe8916ed74e720ee62bc9f4bc5772487463d243",
-      "bytes": 7071
+      "sha256": "b77c033586e9d9420500009e30027bfc9b912fd7ee42c7c25427693f57d359cd",
+      "bytes": 8192
     },
     {
       "path": "docs/setup/C07c-staging-scheduler.md",
@@ -88,8 +88,8 @@
     {
       "path": "docs/verification/C07c-execution.md",
       "change": "added",
-      "sha256": "25b57a6b8497457136b631d6ee66d92b3c34ad2af41c3e64119be36c7fc9c2a2",
-      "bytes": 10702
+      "sha256": "a7bc5d68699567f929bedd977f835678b1839bb634bb82b3e6980a7e0bc44820",
+      "bytes": 12127
     },
     {
       "path": "src/app/admin/notifications/page.tsx",
