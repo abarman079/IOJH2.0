@@ -1,0 +1,203 @@
+{
+  "project": "IOJH 2.0",
+  "packet": "C07c",
+  "baselineBranch": "main",
+  "baselineCommit": "e9077ea23a883d4f577f630392f795d4ea86af58",
+  "targetBranch": "c07c-authenticated-worker-scheduler",
+  "migration": "202611240001",
+  "hashBasis": "Canonical staged Git file bytes",
+  "added": [
+    "docs/acceptance/C07c.md",
+    "docs/adr/C07c-worker-scheduler.md",
+    "docs/manifest/C07c.json",
+    "docs/security/C07c-threat-review.md",
+    "docs/setup/C07c-staging-scheduler.md",
+    "docs/setup/C07c-windows-integration.md",
+    "docs/verification/C07c-execution.md",
+    "src/app/admin/operations/page.tsx",
+    "src/app/api/internal/jobs/run/route.ts",
+    "src/lib/jobs/runner-policy.d.mts",
+    "src/lib/jobs/runner-policy.mjs",
+    "src/lib/jobs/runner.ts",
+    "supabase/migrations/202611240001_c07c_runner.sql",
+    "supabase/tests/c07c_runner_security.sql",
+    "supabase/verify/c07c_readonly_postflight.sql",
+    "supabase/verify/c07c_readonly_preflight.sql",
+    "tests/e2e/c07c-runner.spec.ts",
+    "tests/integration/c07c_concurrency.py",
+    "tests/unit/c07c-runner.test.mjs"
+  ],
+  "modified": [
+    ".env.example",
+    ".github/workflows/c05c-db-tests.yml",
+    "src/app/admin/notifications/page.tsx",
+    "src/app/admin/page.tsx",
+    "src/features/notifications/notification-review-panel.tsx",
+    "src/lib/notifications/provider.d.mts",
+    "src/lib/notifications/provider.mjs",
+    "src/lib/notifications/server.ts"
+  ],
+  "deleted": [],
+  "renamed": [],
+  "dependencyChanges": [],
+  "hostedChanges": [],
+  "githubWriteStatus": "Prepared for owner feature branch push",
+  "files": [
+    {
+      "path": ".env.example",
+      "change": "modified",
+      "sha256": "92500e332934976b2fa9d7cb1a7f0e17ca25228d3184660698bc16acc4560b9b",
+      "bytes": 1755
+    },
+    {
+      "path": ".github/workflows/c05c-db-tests.yml",
+      "change": "modified",
+      "sha256": "ed74182f69faa806ba51a2592788e6768c52a67fb5f2d4aabc8b69543e89abb6",
+      "bytes": 21230
+    },
+    {
+      "path": "docs/acceptance/C07c.md",
+      "change": "added",
+      "sha256": "c201fd55cd689feb5ceb565ba149b78cc497941ecddcc465df2399ebc3bf4ed7",
+      "bytes": 7611
+    },
+    {
+      "path": "docs/adr/C07c-worker-scheduler.md",
+      "change": "added",
+      "sha256": "33a637a15c168ac695589ebfc58ae739a4f1b38f3014288e3c4e31271fbc9540",
+      "bytes": 7594
+    },
+    {
+      "path": "docs/security/C07c-threat-review.md",
+      "change": "added",
+      "sha256": "b77c033586e9d9420500009e30027bfc9b912fd7ee42c7c25427693f57d359cd",
+      "bytes": 8192
+    },
+    {
+      "path": "docs/setup/C07c-staging-scheduler.md",
+      "change": "added",
+      "sha256": "68264ca01b701540960693e2e2ec47430ad223789c6aa8718b73e6102fd1ad34",
+      "bytes": 7529
+    },
+    {
+      "path": "docs/setup/C07c-windows-integration.md",
+      "change": "added",
+      "sha256": "86254d794ebd7895bcbc46fedde95bd103147633beb36c4ed3f9495a7e06722e",
+      "bytes": 7871
+    },
+    {
+      "path": "docs/verification/C07c-execution.md",
+      "change": "added",
+      "sha256": "a7bc5d68699567f929bedd977f835678b1839bb634bb82b3e6980a7e0bc44820",
+      "bytes": 12127
+    },
+    {
+      "path": "src/app/admin/notifications/page.tsx",
+      "change": "modified",
+      "sha256": "b09904e87027d0621dcc1f7cbe058da57c39bd56616979ac333b0372c382cc41",
+      "bytes": 1407
+    },
+    {
+      "path": "src/app/admin/operations/page.tsx",
+      "change": "added",
+      "sha256": "70054dc1cac7b783b45dec0011a1a14deb4abef69c62d06161c0fc1691eef82c",
+      "bytes": 2894
+    },
+    {
+      "path": "src/app/admin/page.tsx",
+      "change": "modified",
+      "sha256": "5a514ad157947d471e3738e4d7295845ee5e67defb0653aa5c3d3c9b4258d112",
+      "bytes": 1446
+    },
+    {
+      "path": "src/app/api/internal/jobs/run/route.ts",
+      "change": "added",
+      "sha256": "7f01924ffcc837ac87b367385505a260281023389c86529cb5a776987ef2ea41",
+      "bytes": 518
+    },
+    {
+      "path": "src/features/notifications/notification-review-panel.tsx",
+      "change": "modified",
+      "sha256": "b9dc97f1cbcc8d3592fcd0d0bd496972d2be734440f78fd799aea58ea807bb50",
+      "bytes": 6631
+    },
+    {
+      "path": "src/lib/jobs/runner-policy.d.mts",
+      "change": "added",
+      "sha256": "17888e8ea61cb80d7bf706bb5ef62e71a4fe6a5076f8f4dad32d388b083e5371",
+      "bytes": 1192
+    },
+    {
+      "path": "src/lib/jobs/runner-policy.mjs",
+      "change": "added",
+      "sha256": "1fc38994c62bdc3e52d50e95a34a9851ff89b39e19987a42b4574469c46adda7",
+      "bytes": 4743
+    },
+    {
+      "path": "src/lib/jobs/runner.ts",
+      "change": "added",
+      "sha256": "64cbcbbe96899fada5e38f7445035490723737073c4a28cd62b7af7b4c106c43",
+      "bytes": 3815
+    },
+    {
+      "path": "src/lib/notifications/provider.d.mts",
+      "change": "modified",
+      "sha256": "92796449b9d4854b167cb510d6d17efa5a1b446ae6eeee57e89066740c4b881c",
+      "bytes": 466
+    },
+    {
+      "path": "src/lib/notifications/provider.mjs",
+      "change": "modified",
+      "sha256": "bd00c364e9ee76db120c70fa870769ded42fd9de67d2794cb3bfb651c282f20e",
+      "bytes": 2988
+    },
+    {
+      "path": "src/lib/notifications/server.ts",
+      "change": "modified",
+      "sha256": "478f54232a905bcb22f9fd82492d5bd5804116fb8ddfadafcd482491f6ad91b1",
+      "bytes": 5874
+    },
+    {
+      "path": "supabase/migrations/202611240001_c07c_runner.sql",
+      "change": "added",
+      "sha256": "e1318aec55221d895ce48443347385f37b7455db0ab3db1907c0debf27981601",
+      "bytes": 23215
+    },
+    {
+      "path": "supabase/tests/c07c_runner_security.sql",
+      "change": "added",
+      "sha256": "519ff2a099a2bb70105cae4bc3d1c94272ad4a93026dd685a3e975c30dafb963",
+      "bytes": 9249
+    },
+    {
+      "path": "supabase/verify/c07c_readonly_postflight.sql",
+      "change": "added",
+      "sha256": "5e11162f1f241ef1c642d7604f2398583b6bf96be7bea0ec0142beeea50477fd",
+      "bytes": 1078
+    },
+    {
+      "path": "supabase/verify/c07c_readonly_preflight.sql",
+      "change": "added",
+      "sha256": "342ee3c5abaff7918790ddc8f8e0134b2de2a2375f31e402d6818c6ffc1a229a",
+      "bytes": 772
+    },
+    {
+      "path": "tests/e2e/c07c-runner.spec.ts",
+      "change": "added",
+      "sha256": "284f247b3c0a47d7b18c86818e0b0b4732873164d91b014d14c3f31646aaf180",
+      "bytes": 1979
+    },
+    {
+      "path": "tests/integration/c07c_concurrency.py",
+      "change": "added",
+      "sha256": "6a7e3aa74a8883b9783c25df10d4f0ea5e284da01d762c0ce4b7a2caa73d1f1d",
+      "bytes": 3953
+    },
+    {
+      "path": "tests/unit/c07c-runner.test.mjs",
+      "change": "added",
+      "sha256": "ab79bbb63870fa70e7d0aa6e79bfdb9f65f9fe1b2ea12553a5ebf687fc20549e",
+      "bytes": 5962
+    }
+  ]
+}

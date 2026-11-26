@@ -18,7 +18,7 @@ export async function sendResend({apiKey,from,to,subject,html,text,notificationI
   let response;
   try {
     response = await fetchImpl('https://api.resend.com/emails', {
-      method:'POST',
+      method:'POST',redirect:'error',
       headers:{'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json','Idempotency-Key':`iojh-notice-v1-${notificationId}`},
       body:JSON.stringify({from,to:[to],subject,html,text}), signal,
     });
@@ -29,7 +29,17 @@ export async function sendResend({apiKey,from,to,subject,html,text,notificationI
   let body;
   try { body = await response.json(); } catch { body = {}; }
   if (response.status >= 200 && response.status < 300 && typeof body?.id === 'string' && UUID.test(body.id)) {
-    return {outcome:'accepted',providerId:body.id};
+    return {outcome:'accepted',providerId:body.id.toLowerCase()};
   }
-  return classifyResendStatus(response.status, typeof body?.name === 'string' ? body.name : '');
+  if (response.status >= 200 && response.status < 300) return {outcome:'retry',code:'timeout'};
+  const result=classifyResendStatus(response.status, typeof body?.name === 'string' ? body.name : '');
+  if (response.status===401 || response.status===403 || response.status===404) return {outcome:'retry',code:'provider_unavailable',cooldownSeconds:3600};
+  if (response.status===429) {
+    if (['daily_quota_exceeded','monthly_quota_exceeded'].includes(body?.name)) return {...result,cooldownSeconds:86400};
+    const raw=response.headers?.get('retry-after');
+    const seconds=raw && /^\d+$/.test(raw) ? Number(raw) : raw ? Math.ceil((Date.parse(raw)-Date.now())/1000) : 0;
+    return {...result,cooldownSeconds:Math.min(86400,Math.max(300,Number.isFinite(seconds)?seconds:0))};
+  }
+  if(response.status===409 && result.outcome==='permanent') return {...result,code:'idempotency_conflict'};
+  return result;
 }

@@ -1,4 +1,4 @@
-name: IOJH Database Security — C05c through C07b
+name: IOJH Database Security — C05c through C07c
 
 on:
   pull_request:
@@ -8,15 +8,23 @@ on:
       - 'src/lib/jobs/**'
       - 'src/lib/notifications/**'
       - 'src/features/notifications/**'
+      - 'src/app/api/internal/jobs/**'
+      - 'src/app/admin/operations/**'
+      - 'tests/unit/c07c*'
+      - 'tests/e2e/c07c*'
       - 'tests/integration/**'
       - '.github/workflows/c05c-db-tests.yml'
   push:
-    branches: [main, 'c05c-db-security', 'c06-*', 'c07-*', 'c07b-*']
+    branches: [main, 'c05c-db-security', 'c06-*', 'c07-*', 'c07b-*', 'c07c-*']
     paths:
       - 'supabase/**'
       - 'src/lib/jobs/**'
       - 'src/lib/notifications/**'
       - 'src/features/notifications/**'
+      - 'src/app/api/internal/jobs/**'
+      - 'src/app/admin/operations/**'
+      - 'tests/unit/c07c*'
+      - 'tests/e2e/c07c*'
       - 'tests/integration/**'
       - '.github/workflows/c05c-db-tests.yml'
   workflow_dispatch:
@@ -49,9 +57,485 @@ jobs:
         run: supabase test db supabase/tests/c07a_jobs_security.sql
       - name: Test C07b notifications, suppression and authorization
         run: supabase test db supabase/tests/c07b_notifications_security.sql
+      - name: Test C07c worker coordination and notification consistency
+        run: supabase test db supabase/tests/c07c_runner_security.sql
       - name: Install isolated PostgreSQL concurrency-test client
         run: python -m pip install 'psycopg[binary]==3.2.10'
       - name: Test C07a independent-session concurrency and lease fencing
         env:
           IOJH_TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
         run: python tests/integration/c07a_concurrency.py
+      - name: Test C07c independent-session runner coordination
+        env:
+          IOJH_TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+        run: python tests/integration/c07c_concurrency.py
+
+  runner-http:
+    name: C07c authenticated HTTP worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install frozen application dependencies
+        run: |
+          corepack enable
+          corepack pnpm install --frozen-lockfile
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.1
+
+      - name: Start isolated Supabase stack
+        run: |
+          supabase start > "$RUNNER_TEMP/c07c-start.log" 2>&1
+          supabase status -o json > "$RUNNER_TEMP/c07c-status.json"
+
+      - name: Install PostgreSQL integration client
+        run: python -m pip install 'psycopg[binary]==3.2.10'
+
+      - name: Verify authenticated worker and disabled email isolation
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import secrets
+          import signal
+          import subprocess
+          import time
+          import uuid
+          import urllib.request
+          import urllib.error
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import psycopg
+
+          config = json.loads(
+              Path(os.environ["RUNNER_TEMP"],
+                   "c07c-status.json").read_text()
+          )
+
+          api = config["API_URL"]
+          dsn = config["DB_URL"]
+
+          assert api == "http://127.0.0.1:54321"
+          db_url = urlparse(dsn)
+          assert db_url.hostname == "127.0.0.1"
+          assert db_url.port == 54322
+          assert db_url.path == "/postgres"
+
+          public_key = config.get("ANON_KEY") or config.get("PUBLISHABLE_KEY")
+          service_key = config.get("SERVICE_ROLE_KEY") or config.get("SECRET_KEY")
+
+          assert public_key and service_key
+          assert public_key != service_key
+
+          runner_secret = secrets.token_hex(32)
+
+          env = dict(os.environ)
+          env.update({
+              "NEXT_PUBLIC_SITE_URL": "http://127.0.0.1:3000",
+              "NEXT_PUBLIC_SUPABASE_URL": api,
+              "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": public_key,
+              "IOJH_JOBS_SERVICE_KEY": service_key,
+              "IOJH_JOBS_RUNNER_ENABLED": "true",
+              "IOJH_JOBS_RUNNER_SECRET": runner_secret,
+              "IOJH_NOTIFICATIONS_SEND_ENABLED": "false",
+              "IOJH_NOTIFICATIONS_WEBHOOK_ENABLED": "false",
+              "IOJH_NOTIFICATIONS_RESEND_API_KEY": "",
+              "IOJH_NOTIFICATIONS_FROM": "",
+              "IOJH_NOTIFICATIONS_STAGING_RECIPIENT": "",
+              "IOJH_NOTIFICATIONS_STAGING_NOTIFICATION_ID": "",
+              "IOJH_NOTIFICATIONS_STAGING_ORIGIN": ""
+          })
+
+          def query(sql, params=()):
+              with psycopg.connect(dsn, connect_timeout=5) as conn:
+                  return conn.execute(sql, params).fetchone()
+
+          opener = urllib.request.build_opener(
+              urllib.request.ProxyHandler({})
+          )
+
+          def request(method="POST", token=None, body=b"{}"):
+              headers = {"Content-Type": "application/json"}
+
+              if token is not None:
+                  headers["Authorization"] = "Bearer " + token
+
+              req = urllib.request.Request(
+                  "http://127.0.0.1:3000/api/internal/jobs/run",
+                  data=body if method == "POST" else None,
+                  headers=headers,
+                  method=method
+              )
+
+              try:
+                  response = opener.open(req, timeout=45)
+              except urllib.error.HTTPError as error:
+                  response = error
+
+              with response:
+                  return (
+                      response.status,
+                      json.loads(response.read()),
+                      response.headers
+                  )
+
+          subprocess.run(
+              ["corepack", "pnpm", "build"],
+              env=env, check=True
+          )
+
+          log_path = Path(os.environ["RUNNER_TEMP"], "c07c-next.log")
+
+          with log_path.open("w") as log:
+              server = subprocess.Popen(
+                  ["corepack", "pnpm", "start",
+                   "--hostname", "0.0.0.0"],
+                  env=env,
+                  stdout=log,
+                  stderr=subprocess.STDOUT,
+                  start_new_session=True
+              )
+
+              try:
+                  for _ in range(60):
+                      if server.poll() is not None:
+                          raise RuntimeError("Application stopped unexpectedly")
+
+                      try:
+                          if request(method="GET")[0] == 405:
+                              break
+                      except (OSError, urllib.error.URLError):
+                          pass
+
+                      time.sleep(1)
+                  else:
+                      raise RuntimeError("Application readiness failed")
+
+                  print("PASS: Production application started")
+
+                  assert request()[0] == 401
+                  assert request(token="0" * 64)[0] == 401
+                  assert request(token=runner_secret,
+                                 body=b'{"limit":100}')[0] == 400
+                  assert request(token=runner_secret,
+                                 body=b"x" * 65)[0] == 400
+
+                  assert query(
+                      "select last_started from private.runner_state"
+                  )[0] is None
+
+                  print("PASS: Unauthorized and invalid requests denied")
+
+                  job_id = query(
+                      "select public.iojh_jobs_enqueue_probe(%s,%s,null,3)",
+                      (uuid.uuid4(), "c07c-http-" + uuid.uuid4().hex)
+                  )[0]
+
+                  notice_id = query(
+                      "select public.iojh_notifications_enqueue_fixture(%s,%s,'en')",
+                      ("C07C-HTTP-TEST", "c07c-mail-" + uuid.uuid4().hex)
+                  )[0]
+
+                  assert query(
+                      "select state, attempts from private.jobs where id=%s",
+                      (job_id,)
+                  ) == ("pending", 0)
+
+                  status, result, headers = request(token=runner_secret)
+
+                  assert status == 200
+                  assert result["ok"] is True
+                  assert result["busy"] is False
+                  assert result["summary"]["claimed"] == 1
+                  assert result["summary"]["completed"] == 1
+                  assert result["summary"]["submitted"] == 0
+                  assert "no-store" in headers["Cache-Control"]
+                  assert runner_secret not in json.dumps(result)
+
+                  print("PASS: Authenticated HTTP worker completed probe")
+
+                  assert query(
+                      """select state, attempts, total_attempts
+                         from private.jobs where id=%s""",
+                      (job_id,)
+                  ) == ("succeeded", 1, 1)
+
+                  assert query(
+                      """select count(*) from private.job_attempts
+                         where job_id=%s and outcome='succeeded'""",
+                      (job_id,)
+                  )[0] == 1
+
+                  status, result, _ = request(token=runner_secret)
+
+                  assert status == 200
+                  assert result["summary"]["claimed"] == 0
+
+                  assert query(
+                      "select total_attempts from private.jobs where id=%s",
+                      (job_id,)
+                  )[0] == 1
+
+                  print("PASS: Repeated execution did not duplicate probe")
+
+                  assert query(
+                      """select j.state,j.attempts,n.status
+                         from private.notification_records n
+                         join private.jobs j on j.id=n.job_id
+                         where n.id=%s""",
+                      (notice_id,)
+                  ) == ("pending", 0, "queued")
+
+                  print("PASS: Disabled email retained its attempt budget")
+
+                  assert query(
+                      """select last_success is not null,
+                                last_finished is not null,
+                                run_token is null
+                         from private.runner_state"""
+                  ) == (True, True, True)
+
+                  print("PASS: Worker heartbeat and settlement verified")
+                  print("SUCCESS: C07c authenticated HTTP integration passed")
+
+                  import ipaddress
+
+                  assert os.environ.get("GITHUB_ACTIONS") == "true"
+                  assert env["IOJH_NOTIFICATIONS_SEND_ENABLED"] == "false"
+                  assert env["IOJH_NOTIFICATIONS_WEBHOOK_ENABLED"] == "false"
+
+                  # Locate the disposable PostgreSQL container.
+                  container_ids = subprocess.check_output(
+                      ["docker", "ps", "-q"], text=True
+                  ).split()
+
+                  assert container_ids
+
+                  containers = json.loads(subprocess.check_output(
+                      ["docker", "inspect", *container_ids], text=True
+                  ))
+
+                  db_containers = [
+                      c for c in containers
+                      if any(
+                          binding.get("HostPort") == "54322"
+                          for bindings in c["NetworkSettings"]["Ports"].values()
+                          for binding in (bindings or [])
+                      )
+                  ]
+
+                  assert len(db_containers) == 1, "Disposable DB container not identified"
+
+                  gateways = {
+                      network["Gateway"]
+                      for network in db_containers[0]["NetworkSettings"]["Networks"].values()
+                      if network.get("Gateway")
+                  }
+
+                  assert len(gateways) == 1, "Unexpected Docker network configuration"
+
+                  gateway = next(iter(gateways))
+                  assert ipaddress.ip_address(gateway).is_private
+
+                  scheduler_url = (
+                      f"http://{gateway}:3000/api/internal/jobs/run"
+                  )
+
+                  def rows(sql, params=()):
+                      with psycopg.connect(dsn, connect_timeout=5) as conn:
+                          return conn.execute(sql, params).fetchall()
+
+                  # Extensions are enabled ONLY inside this disposable CI database.
+                  with psycopg.connect(dsn, connect_timeout=5) as conn:
+                      conn.execute("create extension if not exists pg_cron with schema pg_catalog")
+                      conn.execute("create extension if not exists pg_net with schema extensions")
+                      conn.execute("create schema if not exists vault")
+                      conn.execute("create extension if not exists supabase_vault with schema vault")
+
+                      conn.execute("""
+                          create table private.c07c_ci_scheduler_requests (
+                              request_id bigint primary key,
+                              scheduled_at timestamptz not null default clock_timestamp()
+                          )
+                      """)
+
+                      conn.execute("""
+                          revoke all on private.c07c_ci_scheduler_requests
+                          from public, anon, authenticated, service_role
+                      """)
+
+                  print("PASS: Disposable scheduler extensions initialized")
+
+                  # Record access privileges, never read or print request headers.
+                  for role in ("anon", "authenticated", "service_role"):
+                      allowed = query(
+                          """select has_table_privilege(
+                              %s, 'net.http_request_queue', 'SELECT'
+                          )""",
+                          (role,)
+                      )[0]
+                      print(f"INFO: Local pg_net queue SELECT privilege: {role}={allowed}")
+
+                  # Store temporary CI credentials in disposable Vault.
+                  query(
+                      "select vault.create_secret(%s,%s)",
+                      (scheduler_url, "c07c-ci-url")
+                  )
+
+                  query(
+                      "select vault.create_secret(%s,%s)",
+                      (runner_secret, "c07c-ci-token")
+                  )
+
+                  scheduled_probe = query(
+                      "select public.iojh_jobs_enqueue_probe(%s,%s,null,3)",
+                      (uuid.uuid4(), "c07c-scheduler-" + uuid.uuid4().hex)
+                  )[0]
+
+                  assert query(
+                      "select state, attempts from private.jobs where id=%s",
+                      (scheduled_probe,)
+                  ) == ("pending", 0)
+
+                  schedule_sql = """
+                      insert into private.c07c_ci_scheduler_requests(request_id)
+                      select net.http_post(
+                          url := (
+                              select decrypted_secret
+                              from vault.decrypted_secrets
+                              where name='c07c-ci-url'
+                          ),
+                          headers := jsonb_build_object(
+                              'Content-Type', 'application/json',
+                              'Authorization', 'Bearer ' || (
+                                  select decrypted_secret
+                                  from vault.decrypted_secrets
+                                  where name='c07c-ci-token'
+                              )
+                          ),
+                          body := '{}'::jsonb,
+                          timeout_milliseconds := 40000
+                      );
+                  """
+
+                  assert query(
+                      "select count(*) from cron.job where jobname=%s",
+                      ("c07c-ci-scheduler",)
+                  )[0] == 0
+
+                  cron_id = query(
+                      "select cron.schedule(%s,%s,%s)",
+                      ("c07c-ci-scheduler", "* * * * *", schedule_sql)
+                  )[0]
+
+                  print("PASS: One disposable scheduler registered")
+
+                  try:
+                      deadline = time.monotonic() + 420
+
+                      while time.monotonic() < deadline:
+                          responses = rows("""
+                              select r.scheduled_at,
+                                     h.status_code,
+                                     h.timed_out,
+                                     h.error_msg,
+                                     h.content
+                              from private.c07c_ci_scheduler_requests r
+                              join net._http_response h on h.id=r.request_id
+                              order by r.scheduled_at
+                              limit 5
+                          """)
+
+                          successful_runs = query(
+                              """select count(*) from cron.job_run_details
+                                 where jobid=%s and status='succeeded'""",
+                              (cron_id,)
+                          )[0]
+
+                          if len(responses) >= 5 and successful_runs >= 5:
+                              break
+
+                          time.sleep(5)
+                      else:
+                          raise RuntimeError("Five scheduler invocations were not verified")
+
+                      summaries = []
+
+                      for index, response in enumerate(responses):
+                          scheduled_at, status, timed_out, error, content = response
+
+                          assert status == 200, f"Scheduled request {index+1} failed"
+                          assert timed_out is not True
+                          assert not error
+
+                          result = json.loads(content)
+                          assert result["ok"] is True
+                          assert result["busy"] is False
+                          assert runner_secret not in json.dumps(result)
+                          assert result["summary"]["submitted"] == 0
+
+                          summaries.append(result["summary"])
+
+                          print(f"PASS: Scheduled HTTP invocation {index+1}/5")
+
+                      for previous, current in zip(responses, responses[1:]):
+                          interval = (current[0] - previous[0]).total_seconds()
+                          assert 45 <= interval <= 75, "Unexpected scheduler interval"
+
+                      assert sum(x["completed"] for x in summaries) == 1
+
+                      assert query(
+                          """select state,attempts,total_attempts
+                             from private.jobs where id=%s""",
+                          (scheduled_probe,)
+                      ) == ("succeeded", 1, 1)
+
+                      assert query(
+                          """select j.state,j.attempts,n.status
+                             from private.notification_records n
+                             join private.jobs j on j.id=n.job_id
+                             where n.id=%s""",
+                          (notice_id,)
+                      ) == ("pending", 0, "queued")
+
+                      assert query("""
+                          select last_success >= (
+                              select min(scheduled_at)
+                              from private.c07c_ci_scheduler_requests
+                          )
+                          from private.runner_state
+                      """)[0] is True
+
+                      print("PASS: One-minute cadence verified")
+                      print("PASS: Scheduled probe completed exactly once")
+                      print("PASS: Disabled notification remained untouched")
+                      print("PASS: Scheduler heartbeat verified")
+
+                  finally:
+                      assert query(
+                          "select cron.unschedule(%s)", (cron_id,)
+                      )[0] is True
+
+                  assert query(
+                      "select count(*) from cron.job where jobid=%s",
+                      (cron_id,)
+                  )[0] == 0
+
+                  print("PASS: Disposable scheduler removed")
+                  print("SUCCESS: C07c disposable scheduler integration passed")
+
+              finally:
+                  if server.poll() is None:
+                      os.killpg(server.pid, signal.SIGTERM)
+                      server.wait(timeout=15)
+          PY

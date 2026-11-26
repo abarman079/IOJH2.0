@@ -1,0 +1,58 @@
+# C07c ADR — bounded authenticated worker
+
+Baseline: e9077ea23a883d4f577f630392f795d4ea86af58 (main). V5 §§11.2–11.4, 14, 15.1–15.3, 15.6, 17, 22.1, 22.8–22.9. C07c only. No replacement queue or new provider.
+
+## Execution model
+POST `/api/internal/jobs/run` is a Node route excluded by the current proxy matcher. Dedicated 64-hex-character random bearer, constant-time comparison, disabled by default. No query parameters; at most 64 bytes, empty or `{}`, one-second read deadline. All responses private/no-store. No DB/provider work before auth and input checks. Do not log authorization headers; HTTPS mandatory outside loopback.
+
+A singleton private runner row admits one invocation for 90 seconds. Database wall-clock time is read after row locks. Each new claim takes one row via `FOR UPDATE SKIP LOCKED`, checks the active run token, restricts version 1 and approved job kinds, and filters email by configured recipient AND notification UUID before attempts are consumed. A separate 20-row sweep only terminalizes already-exhausted leases (it never increments attempts). Existing C07a RPCs are retained for compatibility with trusted backend callers and tests; C07c never uses unfiltered claim. No browser/customer can execute either. A trusted service key can bypass application flags, so protect it and never expose general-purpose service RPC passthroughs.
+
+Per invocation: 28-second processing budget after admission (3 seconds admission and up to 3 seconds ending, 1 second body read; 40-second declared host cap). Up to 3 jobs, sequential, one claim at a time. Individual RPCs use 3-second abort signals; provider request/body uses 8 seconds. Minimum remaining budget before claim: 10 seconds probe, 26 seconds email. At least 20 seconds before starting email handler; 90-second job lease. No renewal in this short bounded path; existing C07a renewal (15-minute cumulative cap) remains valid for future handlers. Database send reservation checks 15 seconds remaining on both run and job lease. Actual host timeout, network and post-cancellation DB transaction behavior still need staging proof; abort is not proof of server rollback. After an unexpected error, stop processing, let the lease expire if unsettled. Release the run only through fenced `runner_end`; loss of that response is handled by expiry. No background processing after HTTP response.
+
+## Notification delivery
+C07c is deliberately staging-only for email. It requires explicit HTTPS staging origin (not live IOJH domain), one approved recipient AND one pre-enqueued notification UUID, valid provider settings, and both runner/send flags. The `.invalid` fixture is never sent. Render the existing EN/BN template with a clearly identified STAGING TEST notice. Pin exact sender, recipient, subject, body and credential through SHA-256 fingerprint (no content or key stored); a changed key, origin, sender, template or request body quarantines instead of resending. Historical previously prepared ambiguous requests without fingerprints are quarantined on an attempted retry. Stable provider idempotency key retained; never promise exactly-once. At 23 hours from first preparation, unresolved sends are quarantined. A provider 2xx without a valid ID is ambiguous; invalid idempotency conflicts go to manual review. Provider acceptance and delivery remain separate. Acknowledged acceptance with later bounce/complaint preserves provider ID and suppression.
+
+Send authorization repeats suppression under run/job/notice locks; unavoidable race remains between DB commit and network dispatch. No cancellation of an already accepted external message is claimed. A previous send reservation without settled evidence is ambiguous. At exhaustion of a potentially dispatched job, the notification becomes uncertain; no-dispatch crash becomes failed. REST settlement and provider-event ingestion take the same transaction-scoped advisory lock by provider ID, avoiding lost early webhooks. Existing notification-specific settlement calls the existing C07a fenced transition in the same transaction. Historical attempt/audit records are retained.
+
+## Durable rate policy
+One admitted worker and pessimistic 60-second cooldown on send reservation; provider errors extend it monotonically. 429: at least 300 seconds, honoring numeric or HTTP-date Retry-After up to 24h; recognized daily/monthly quota codes pause 24h. 401/403/404: one hour, other transient/timeout: five minutes. No email claims during cooldown, probes continue. This is conservative for the one-message staging contract; no claim that account-wide shared SMTP quotas can be enforced here. Operator must check provider quota and investigate repeated failures. No new newsletter, payments or general production notification sending.
+
+## Monitoring
+Protected `/admin/operations` uses fresh C05 guard and user-scoped AAL2 aggregate RPC. No service client in browser. Bounded singleton stores last admitted/finished/successful timestamps, last run summary, cooldown and last sanitized error; admitted timestamp serves as heartbeat. Counts are current queue states, not delivery receipts. Freshness is a 3-minute heuristic; host/scheduler must confirm real cadence. Existing admin review and AAL2 retry preserve obligation history. No raw recipient or message body in monitoring.
+
+## Alternatives and references
+Prefer existing Supabase Cron for authorized staging if available; cPanel cron is fallback if verified. Vercel Hobby cron is not minute-level, and its noncommercial terms make it inappropriate for an institutional business by default. No paid dependency introduced. Official references checked: https://supabase.com/docs/guides/cron ; https://supabase.com/docs/guides/cron/quickstart ; https://supabase.com/docs/guides/database/extensions/pg_net ; https://supabase.com/docs/guides/database/vault ; https://docs.cpanel.net/cpanel/advanced/cron-jobs/ ; https://resend.com/changelog/idempotency-keys ; https://resend.com/pricing ; https://resend.com/changelog/api-rate-limit ; https://vercel.com/docs/cron-jobs/usage-and-pricing . Free limits can change; verify actual dashboard quota and extensions before activation.
+
+Next.js route runtime and host-configurable maxDuration: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config ; Supabase request abort support: https://supabase.com/docs/reference/javascript/using-modifiers-abortsignal . Actual host enforcement still VERIFY.
+
+## Development acceptance and operational deferral
+
+Decision date: 2026-11-26.
+
+The owner accepts C07c for development integration
+following successful disposable database and scheduler
+tests, independent local scheduler proof, controlled
+real transactional email delivery, signed delivery
+event reconciliation and verified cleanup.
+
+Final permanent scheduler selection remains deferred.
+
+Supabase Cron with pg_net requires an unresolved
+credential-access security review. Independent
+scheduling demonstrated a viable local alternative,
+but persistent hosting execution is not yet verified.
+
+WhiteCyber remains a candidate only after isolated
+runtime, resource and operational acceptance tests.
+No hosting purchase or production cutover is authorized.
+
+Temporary Cloudflare Quick Tunnels are not approved
+as permanent production infrastructure.
+
+Under V5 sections 15.2 and 22.8, unaffected local
+development may continue while hosting is blocked.
+Scheduler-dependent functionality must remain disabled
+until its operational prerequisites pass.
+
+C08 development integration does not waive any
+production security, reliability or rollback gate.
